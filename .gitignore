@@ -1,5 +1,6 @@
 songs
 *.sh
 *.txt
-cantos_prueba
-Species_Passeriformes.csv
+*.ipynb_checkpoints
+*.DS_Store
+*.pyc
