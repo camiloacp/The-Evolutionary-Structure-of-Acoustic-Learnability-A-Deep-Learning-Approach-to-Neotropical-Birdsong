@@ -4,3 +4,5 @@ songs
 *.ipynb_checkpoints
 *.DS_Store
 *.pyc
+cantos_prueba
+Species_Passeriformes.csv
