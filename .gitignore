@@ -5,4 +5,4 @@ songs
 *.DS_Store
 *.pyc
 cantos_prueba
-Species_Passeriformes.csv
+*.csv
