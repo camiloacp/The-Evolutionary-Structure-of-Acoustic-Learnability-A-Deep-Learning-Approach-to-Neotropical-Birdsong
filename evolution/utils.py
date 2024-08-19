@@ -3,12 +3,12 @@ import pandas as pd
 def sinonimias(df: pd.DataFrame, avonet1: pd.DataFrame) -> pd.DataFrame:
     """
     Replaces specific species names in the 'Species1' column of the 'avonet1' DataFrame 
-    and the 'Especie' column of the 'df' DataFrame with their corresponding synonyms.
+    and the 'Specie' column of the 'df' DataFrame with their corresponding synonyms.
     Parameters:
-    - df (pd.DataFrame): The DataFrame containing the 'Especie' column.
+    - df (pd.DataFrame): The DataFrame containing the 'Specie' column.
     - avonet1 (pd.DataFrame): The DataFrame containing the 'Species1' column.
     Returns:
-    - pd.DataFrame: The modified 'df' DataFrame with replaced species names in the 'Especie' column.
+    - pd.DataFrame: The modified 'df' DataFrame with replaced species names in the 'Specie' column.
     - pd.DataFrame: The modified 'avonet1' DataFrame with replaced species names in the 'Species1' column.
     """
     avonet1['Species1'] = avonet1['Species1'].str.replace("Tangara_vitriolina", "Stilpnia_vitriolina")
@@ -42,8 +42,52 @@ def sinonimias(df: pd.DataFrame, avonet1: pd.DataFrame) -> pd.DataFrame:
     avonet1['Species1'] = avonet1['Species1'].str.replace("Tangara_varia", "Ixothraupis_varia")
     avonet1['Species1'] = avonet1['Species1'].str.replace("Tangara_xanthogastra", "Ixothraupis_xanthogastra")
 
-    df['Especie'] = df['Especie'].str.replace("Corapipo_altera", "Corapipo_leucorrhoa")
-    df['Especie'] = df['Especie'].str.replace("Xenops_rutilans", "Xenops_rutilus")
+    df['Specie'] = df['Specie'].str.replace("Corapipo_altera", "Corapipo_leucorrhoa")
+    df['Specie'] = df['Specie'].str.replace("Xenops_rutilans", "Xenops_rutilus")
     
     return df, avonet1
+
+def elimina_nulos(df : pd.DataFrame, tabla_de_variables : pd.DataFrame, las_variables_con_valores_unicos : pd.DataFrame) -> pd.DataFrame:
+    """Elimina las columnas de un dataframe que tienen mas de 80% valores nulos --y que no sean constantes-- y retorna el nombre de esas columnas"""
+    las_variables_con_muchos_nulos = tabla_de_variables[tabla_de_variables["Porcentaje Nulos"] >= 80]["Variable"]
+    las_variables_con_muchos_nulos = list(set(las_variables_con_muchos_nulos.values) - set(las_variables_con_valores_unicos .values)) 
+    df1=df.drop(las_variables_con_muchos_nulos, axis=1, inplace = False)
+    return df1,las_variables_con_muchos_nulos
+
+def remove_collinear_features(x, threshold):
+    '''
+    Objetivo:
+        Eliminar características colineales en un marco de datos con un coeficiente de correlación
+        mayor que el umbral. La eliminación de características colineales puede ayudar a un modelo
+        generalizar y mejora la interpretabilidad del modelo.
+        
+    Entradas:
+        x: marco de datos de características
+        umbral: se eliminan las entidades con correlaciones superiores a este valor
+        
+    Producción:
+        marco de datos que contiene solo las características no altamente colineales
+    '''
     
+    # Calculate the correlation matrix
+    corr_matrix = x.corr()
+    iters = range(len(corr_matrix.columns) - 1)
+    drop_cols = []
+    
+    # Iterate through the correlation matrix and compare correlations
+    for i in iters:
+        for j in range(i+1):
+            item = corr_matrix.iloc[j:(j+1), (i+1):(i+2)]
+            col = item.columns
+            row = item.index
+            val = abs(item.values)
+            # If correlation exceeds the threshold
+            if val >= threshold:
+                # Print the correlated features and the correlation value
+                print(col.values[0], "|", row.values[0], "|", round(val[0][0], 2))
+                drop_cols.append(col.values[0])
+                
+    # Drop one of each pair of correlated columns
+    drops = set(drop_cols)
+    x = x.drop(columns=drops)
+    return x
