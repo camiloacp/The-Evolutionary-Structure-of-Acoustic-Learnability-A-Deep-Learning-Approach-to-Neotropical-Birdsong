@@ -17,6 +17,7 @@ librosa = "^0.10.1"
 transformers = "^4.39.3"
 xenopy = "^0.0.4"
 matplotlib = "^3.9.1"
+feature-engine = "^1.8.0"
 
 
 [tool.poetry.group.dev.dependencies]
