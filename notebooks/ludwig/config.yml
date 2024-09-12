@@ -1,0 +1,44 @@
+input_features:
+    -
+        name: audio_path
+        type: audio
+        preprocessing:
+            audio_file_length_limit_in_s: 7.0
+            audio_feature:
+                type: stft
+                window_length_in_s: 0.04
+                window_shift_in_s: 0.02
+        encoder: 
+            type: cnnrnn
+
+output_features:
+    -
+        name: label
+        type: binary
+
+trainer:
+    batch_size: 32
+    epochs: 50
+    early_stop: 5
+    learning_rate: 0.001
+    optimizer:
+        type: adam
+    device: cpu
+
+model:
+    type: ecd
+    combiner:
+        type: concat
+    loss:
+        type: binary_crossentropy
+
+preprocessing:
+    audio:
+        audio_feature:
+            type: stft
+
+defaults:
+    audio:
+        preprocessing:
+            audio_feature:
+                type: stft
