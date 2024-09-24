@@ -1,44 +1,23 @@
 input_features:
-    -
-        name: audio_path
-        type: audio
-        preprocessing:
-            audio_file_length_limit_in_s: 7.0
-            audio_feature:
-                type: stft
-                window_length_in_s: 0.04
-                window_shift_in_s: 0.02
-        encoder: 
-            type: cnnrnn
-
+  - name: audio_path
+    type: audio
+    encoder:
+      type: cnnrnn
+    preprocessing:
+      audio_file_length_limit_in_s: 7.5
+      fill_value: null
+      in_memory: true
+      missing_value_strategy: bfill
+      norm: null
+      num_fft_points: null
+      num_filter_bands: 80
+      padding_value: 0.0
+      type: fbank
+      window_length_in_s: 0.04
+      window_shift_in_s: 0.02
+      window_type: hamming
 output_features:
-    -
-        name: label
-        type: binary
-
-trainer:
-    batch_size: 32
-    epochs: 50
-    early_stop: 5
-    learning_rate: 0.001
-    optimizer:
-        type: adam
-    device: cpu
-
-model:
-    type: ecd
-    combiner:
-        type: concat
-    loss:
-        type: binary_crossentropy
-
-preprocessing:
-    audio:
-        audio_feature:
-            type: stft
-
-defaults:
-    audio:
-        preprocessing:
-            audio_feature:
-                type: stft
+  - name: label
+    type: binary
+training:
+  epochs: 3
