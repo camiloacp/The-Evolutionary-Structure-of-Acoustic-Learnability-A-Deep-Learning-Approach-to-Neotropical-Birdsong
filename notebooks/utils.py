@@ -43,6 +43,7 @@ def sinonimias(df: pd.DataFrame, avonet1: pd.DataFrame) -> pd.DataFrame:
     avonet1['Species1'] = avonet1['Species1'].str.replace("Tangara_xanthogastra", "Ixothraupis_xanthogastra")
     avonet1['Species1'] = avonet1['Species1'].str.replace("Chloropipo_flavicapilla", "Xenopipo_flavicapilla")
     
+    df['Specie'] = df['Specie'].str.replace("Uromyias_agilis", "Anairetes_agilis")
     df['Specie'] = df['Specie'].str.replace("Xenops_rutilans", "Xenops_rutilus")
     df['Specie'] = df['Specie'].str.replace("Chloropipo_flavicapilla", "Xenopipo_flavicapilla")
     df['Specie'] = df['Specie'].str.replace("Premnornis_guttuliger", "Premnornis_guttuligera")

@@ -2974,7 +2974,7 @@ BEGIN TAXA;
 		Myrmotherula_unicolor
 		Epinecrophylla_erythrura
 		Myrmeciza_atrothorax
-		Myrmeciza_pelzelni
+		Ammonastes_pelzelni
 		Clytoctantes_atrogularis
 		Clytoctantes_alixii
 		Myrmorchilus_strigilatus
@@ -3018,7 +3018,7 @@ BEGIN TAXA;
 		Thamnophilus_insignis
 		Sakesphorus_melanothorax
 		Thamnophilus_amazonicus
-		Sakesphorus_melanonotus
+		Thamnophilus_melanonotus
 		Thamnophilus_stictocephalus
 		Thamnophilus_punctatus
 		Thamnophilus_pelzelni
@@ -3053,7 +3053,7 @@ BEGIN TAXA;
 		Mackenziaena_severa
 		Mackenziaena_leachii
 		Dichrozona_cincta
-		Myrmeciza_castanea
+		Sciaphylax_castanea
 		Myrmeciza_hemimelaena
 		Hypocnemis_flavescens
 		Hypocnemis_subflava
@@ -3108,9 +3108,9 @@ BEGIN TAXA;
 		Hylophylax_punctulatus
 		Myrmeciza_longipes
 		Poliocrania_exsul
-		Myrmeciza_berlepschi
-		Myrmeciza_laemosticta
-		Myrmeciza_nigricauda
+		Sipia_berlepschi
+		Sipia_laemosticta
+		Sipia_nigricauda
 		Myrmeciza_griseiceps
 		Myrmoborus_lugubris
 		Myrmoborus_melanurus
@@ -3127,11 +3127,11 @@ BEGIN TAXA;
 		Pyriglena_leucoptera
 		Pyriglena_atra
 		Pyriglena_leuconota
-		Myrmeciza_disjuncta
+		Aprositornis_disjuncta
 		Rhopornis_ardesiacus
 		Sclateria_naevia
 		Schistocichla_schistacea
-		Myrmeciza_ruficauda
+		Anabacerthia_ruficaudata
 		Schistocichla_saturata
 		Schistocichla_caurensis
 		Schistocichla_rufifacies
@@ -3357,14 +3357,14 @@ BEGIN TAXA;
 		Asthenes_pyrrholeuca
 		Oreophylax_moreirae
 		Asthenes_virgata
-		Schizoeaca_fuliginosa
+		Asthenes_fuliginosa
 		Schizoeaca_coryi
 		Schizoeaca_harterti
 		Schizoeaca_vilcabambae
 		Schizoeaca_palpebralis
 		Schizoeaca_griseomurina
 		Schizoeaca_helleri
-		Schizoeaca_perijana
+		Asthenes_perijana
 		Asthenes_pudibunda
 		Asthenes_ottonis
 		Asthenes_urubambensis
@@ -4238,7 +4238,7 @@ BEGIN TAXA;
 		Hylophilus_flavipes
 		Pachysylvia_semibrunnea
 		Hylophilus_pectoralis
-		Hylophilus_ochraceiceps
+		Tunchiornis_ochraceiceps
 		Vireo_leucophrys
 		Vireo_gilvus
 		Vireo_philadelphicus
@@ -6568,7 +6568,7 @@ BEGIN TAXA;
 		Cistothorus_meridae
 		Cistothorus_apolinari
 		Henicorhina_leucophrys
-		Thryothorus_nicefori
+		Thryophilus_nicefori
 		Pheugopedius_fasciatoventris
 		Thryothorus_atrogularis
 		Thryothorus_felix
@@ -6593,7 +6593,7 @@ BEGIN TAXA;
 		Thryothorus_pleurostictus
 		Pheugopedius_spadix
 		Thryothorus_sinaloa
-		Thryothorus_rufalbus
+		Thryophilus_rufalbus
 		Thryothorus_eisenmanni
 		Thryothorus_ludovicianus
 		Henicorhina_leucosticta
@@ -6908,17 +6908,17 @@ BEGIN TAXA;
 		Carduelis_uropygialis
 		Carduelis_siemiradzkii
 		Carduelis_yemenensis
-		Carduelis_xanthogastra
+		Spinus_xanthogastrus
 		Carduelis_atrata
-		Carduelis_yarrellii
-		Carduelis_magellanica
+		Spinus_yarrellii
+		Spinus_magellanicus
 		Carduelis_cucullata
-		Carduelis_spinescens
-		Carduelis_olivacea
+		Spinus_spinescens
+		Spinus_olivaceus
 		Carduelis_barbata
 		Carduelis_tristis
 		Carduelis_lawrencei
-		Carduelis_psaltria
+		Spinus_psaltria
 		Carduelis_pinus
 		Carduelis_spinus
 		Rhodopechys_obsoletus
@@ -7151,7 +7151,7 @@ BEGIN TAXA;
 		Arremon_semitorquatus
 		Arremon_abeillei
 		Arremon_castaneiceps
-		Arremon_torquatus
+		Arremon_assimilis
 		Arremon_virenticeps
 		Arremon_flavirostris
 		Arremon_aurantiirostris
@@ -7398,8 +7398,8 @@ BEGIN TAXA;
 		Buthraupis_aureodorsalis
 		Anisognathus_somptuosus
 		Anisognathus_notabilis
-		Buthraupis_wetmorei
-		Thraupis_cyanocephala
+		Tephrophilus_wetmorei
+		Sporathraupis_cyanocephala
 		Dubusia_taeniata
 		Delothraupis_castaneoventris
 		Saltator_rufiventris
@@ -7410,12 +7410,12 @@ BEGIN TAXA;
 		Anisognathus_melanogenys
 		Tangara_viridicollis
 		Tangara_argyrofenges
-		Tangara_heinei
-		Tangara_cyanoptera
-		Tangara_larvata
-		Tangara_cyanicollis
+		Stilpnia_heinei
+		Stilpnia_cyanoptera
+		Stilpnia_larvata
+		Stilpnia_cyanicollis
 		Tangara_rufigenis
-		Tangara_nigrocincta
+		Stilpnia_nigrocincta
 		Ixothraupis_varia
 		Ixothraupis_guttata
 		Ixothraupis_punctata
@@ -7425,8 +7425,8 @@ BEGIN TAXA;
 		Chalcothraupis_ruficervix
 		Tangara_cabanisi
 		Tangara_cucullata
-		Tangara_vitriolina
-		Tangara_cayana
+		Stilpnia_vitriolina
+		Stilpnia_cayana
 		Tangara_meyerdeschauenseei
 		Tangara_preciosa
 		Tangara_labradorides
@@ -7653,12 +7653,12 @@ BEGIN TAXA;
 		Phrygilus_gayi
 		Phrygilus_punensis
 		Charitospiza_eucosma
-		Oryzoborus_atrirostris
+		Sporophila_atrirostris
 		Oryzoborus_nuttingi
 		Oryzoborus_maximiliani
-		Oryzoborus_crassirostris
-		Oryzoborus_funereus
-		Oryzoborus_angolensis
+		Sporophila_crassirostris
+		Sporophila_funerea
+		Sporophila_angolensis
 		Sporophila_bouvronides
 		Sporophila_leucoptera
 		Sporophila_melanops
@@ -7691,7 +7691,7 @@ BEGIN TAXA;
 		Sporophila_schistacea
 		Sporophila_falcirostris
 		Sporophila_murallae
-		Dolospingus_fringilloides
+		Sporophila_fringilloides
 		Cnemoscopus_rubrirostris
 		Compsospiza_garleppi
 		Compsospiza_baeri
@@ -7718,7 +7718,7 @@ BEGIN TAXA;
 		Poospiza_rubecula
 		Poospiza_erythrophrys
 		Pyrrhocoma_ruficeps
-		Hemispingus_superciliaris
+		Thlypopsis_superciliaris
 		Thlypopsis_pectoralis
 		Thlypopsis_ornata
 		Thlypopsis_sordida
@@ -7727,8 +7727,8 @@ BEGIN TAXA;
 		Thlypopsis_inornata
 		Hemispingus_ochraceus
 		Hemispingus_reyi
-		Hemispingus_frontalis
-		Hemispingus_melanotis
+		Sphenopsis_frontalis
+		Sphenopsis_melanotis
 		Xenospingus_concolor
 		Hemispingus_piurae
 		Incaspiza_watkinsi
@@ -12971,7 +12971,7 @@ BEGIN TREES;
 		2968	Myrmotherula_unicolor,
 		2969	Epinecrophylla_erythrura,
 		2970	Myrmeciza_atrothorax,
-		2971	Myrmeciza_pelzelni,
+		2971	Ammonastes_pelzelni,
 		2972	Clytoctantes_atrogularis,
 		2973	Clytoctantes_alixii,
 		2974	Myrmorchilus_strigilatus,
@@ -13015,7 +13015,7 @@ BEGIN TREES;
 		3012	Thamnophilus_insignis,
 		3013	Sakesphorus_melanothorax,
 		3014	Thamnophilus_amazonicus,
-		3015	Sakesphorus_melanonotus,
+		3015	Thamnophilus_melanonotus,
 		3016	Thamnophilus_stictocephalus,
 		3017	Thamnophilus_punctatus,
 		3018	Thamnophilus_pelzelni,
@@ -13050,7 +13050,7 @@ BEGIN TREES;
 		3047	Mackenziaena_severa,
 		3048	Mackenziaena_leachii,
 		3049	Dichrozona_cincta,
-		3050	Myrmeciza_castanea,
+		3050	Sciaphylax_castanea,
 		3051	Myrmeciza_hemimelaena,
 		3052	Hypocnemis_flavescens,
 		3053	Hypocnemis_subflava,
@@ -13105,9 +13105,9 @@ BEGIN TREES;
 		3102	Hylophylax_punctulatus,
 		3103	Myrmeciza_longipes,
 		3104	Poliocrania_exsul,
-		3105	Myrmeciza_berlepschi,
-		3106	Myrmeciza_laemosticta,
-		3107	Myrmeciza_nigricauda,
+		3105	Sipia_berlepschi,
+		3106	Sipia_laemosticta,
+		3107	Sipia_nigricauda,
 		3108	Myrmeciza_griseiceps,
 		3109	Myrmoborus_lugubris,
 		3110	Myrmoborus_melanurus,
@@ -13124,11 +13124,11 @@ BEGIN TREES;
 		3121	Pyriglena_leucoptera,
 		3122	Pyriglena_atra,
 		3123	Pyriglena_leuconota,
-		3124	Myrmeciza_disjuncta,
+		3124	Aprositornis_disjuncta,
 		3125	Rhopornis_ardesiacus,
 		3126	Sclateria_naevia,
 		3127	Schistocichla_schistacea,
-		3128	Myrmeciza_ruficauda,
+		3128	Anabacerthia_ruficaudata,
 		3129	Schistocichla_saturata,
 		3130	Schistocichla_caurensis,
 		3131	Schistocichla_rufifacies,
@@ -13354,14 +13354,14 @@ BEGIN TREES;
 		3351	Asthenes_pyrrholeuca,
 		3352	Oreophylax_moreirae,
 		3353	Asthenes_virgata,
-		3354	Schizoeaca_fuliginosa,
+		3354	Asthenes_fuliginosa,
 		3355	Schizoeaca_coryi,
 		3356	Schizoeaca_harterti,
 		3357	Schizoeaca_vilcabambae,
 		3358	Schizoeaca_palpebralis,
 		3359	Schizoeaca_griseomurina,
 		3360	Schizoeaca_helleri,
-		3361	Schizoeaca_perijana,
+		3361	Asthenes_perijana,
 		3362	Asthenes_pudibunda,
 		3363	Asthenes_ottonis,
 		3364	Asthenes_urubambensis,
@@ -14235,7 +14235,7 @@ BEGIN TREES;
 		4232	Hylophilus_flavipes,
 		4233	Pachysylvia_semibrunnea,
 		4234	Hylophilus_pectoralis,
-		4235	Hylophilus_ochraceiceps,
+		4235	Tunchiornis_ochraceiceps,
 		4236	Vireo_leucophrys,
 		4237	Vireo_gilvus,
 		4238	Vireo_philadelphicus,
@@ -16565,7 +16565,7 @@ BEGIN TREES;
 		6562	Cistothorus_meridae,
 		6563	Cistothorus_apolinari,
 		6564	Henicorhina_leucophrys,
-		6565	Thryothorus_nicefori,
+		6565	Thryophilus_nicefori,
 		6566	Pheugopedius_fasciatoventris,
 		6567	Thryothorus_atrogularis,
 		6568	Thryothorus_felix,
@@ -16590,7 +16590,7 @@ BEGIN TREES;
 		6587	Thryothorus_pleurostictus,
 		6588	Pheugopedius_spadix,
 		6589	Thryothorus_sinaloa,
-		6590	Thryothorus_rufalbus,
+		6590	Thryophilus_rufalbus,
 		6591	Thryothorus_eisenmanni,
 		6592	Thryothorus_ludovicianus,
 		6593	Henicorhina_leucosticta,
@@ -16905,17 +16905,17 @@ BEGIN TREES;
 		6902	Carduelis_uropygialis,
 		6903	Carduelis_siemiradzkii,
 		6904	Carduelis_yemenensis,
-		6905	Carduelis_xanthogastra,
+		6905	Spinus_xanthogastrus,
 		6906	Carduelis_atrata,
-		6907	Carduelis_yarrellii,
-		6908	Carduelis_magellanica,
+		6907	Spinus_yarrellii,
+		6908	Spinus_magellanicus,
 		6909	Carduelis_cucullata,
-		6910	Carduelis_spinescens,
-		6911	Carduelis_olivacea,
+		6910	Spinus_spinescens,
+		6911	Spinus_olivaceus,
 		6912	Carduelis_barbata,
 		6913	Carduelis_tristis,
 		6914	Carduelis_lawrencei,
-		6915	Carduelis_psaltria,
+		6915	Spinus_psaltria,
 		6916	Carduelis_pinus,
 		6917	Carduelis_spinus,
 		6918	Rhodopechys_obsoletus,
@@ -17148,7 +17148,7 @@ BEGIN TREES;
 		7145	Arremon_semitorquatus,
 		7146	Arremon_abeillei,
 		7147	Arremon_castaneiceps,
-		7148	Arremon_torquatus,
+		7148	Arremon_assimilis,
 		7149	Arremon_virenticeps,
 		7150	Arremon_flavirostris,
 		7151	Arremon_aurantiirostris,
@@ -17395,8 +17395,8 @@ BEGIN TREES;
 		7392	Buthraupis_aureodorsalis,
 		7393	Anisognathus_somptuosus,
 		7394	Anisognathus_notabilis,
-		7395	Buthraupis_wetmorei,
-		7396	Thraupis_cyanocephala,
+		7395	Tephrophilus_wetmorei,
+		7396	Sporathraupis cyanocephala,
 		7397	Dubusia_taeniata,
 		7398	Delothraupis_castaneoventris,
 		7399	Saltator_rufiventris,
@@ -17407,12 +17407,12 @@ BEGIN TREES;
 		7404	Anisognathus_melanogenys,
 		7405	Tangara_viridicollis,
 		7406	Tangara_argyrofenges,
-		7407	Tangara_heinei,
-		7408	Tangara_cyanoptera,
-		7409	Tangara_larvata,
-		7410	Tangara_cyanicollis,
+		7407	Stilpnia_heinei,
+		7408	Stilpnia_cyanoptera,
+		7409	Stilpnia_larvata,
+		7410	Stilpnia_cyanicollis,
 		7411	Tangara_rufigenis,
-		7412	Tangara_nigrocincta,
+		7412	Stilpnia_nigrocincta,
 		7413	Ixothraupis_varia,
 		7414	Ixothraupis_guttata,
 		7415	Ixothraupis_punctata,
@@ -17422,8 +17422,8 @@ BEGIN TREES;
 		7419	Chalcothraupis_ruficervix,
 		7420	Tangara_cabanisi,
 		7421	Tangara_cucullata,
-		7422	Tangara_vitriolina,
-		7423	Tangara_cayana,
+		7422	Stilpnia_vitriolina,
+		7423	Stilpnia_cayana,
 		7424	Tangara_meyerdeschauenseei,
 		7425	Tangara_preciosa,
 		7426	Tangara_labradorides,
@@ -17650,12 +17650,12 @@ BEGIN TREES;
 		7647	Phrygilus_gayi,
 		7648	Phrygilus_punensis,
 		7649	Charitospiza_eucosma,
-		7650	Oryzoborus_atrirostris,
+		7650	Sporophila_atrirostris,
 		7651	Oryzoborus_nuttingi,
 		7652	Oryzoborus_maximiliani,
-		7653	Oryzoborus_crassirostris,
-		7654	Oryzoborus_funereus,
-		7655	Oryzoborus_angolensis,
+		7653	Sporophila_crassirostris,
+		7654	Sporophila_funerea,
+		7655	Sporophila_angolensis,
 		7656	Sporophila_bouvronides,
 		7657	Sporophila_leucoptera,
 		7658	Sporophila_melanops,
@@ -17688,7 +17688,7 @@ BEGIN TREES;
 		7685	Sporophila_schistacea,
 		7686	Sporophila_falcirostris,
 		7687	Sporophila_murallae,
-		7688	Dolospingus_fringilloides,
+		7688	Sporophila_fringilloides,
 		7689	Cnemoscopus_rubrirostris,
 		7690	Compsospiza_garleppi,
 		7691	Compsospiza_baeri,
@@ -17715,7 +17715,7 @@ BEGIN TREES;
 		7712	Poospiza_rubecula,
 		7713	Poospiza_erythrophrys,
 		7714	Pyrrhocoma_ruficeps,
-		7715	Hemispingus_superciliaris,
+		7715	Thlypopsis_superciliaris,
 		7716	Thlypopsis_pectoralis,
 		7717	Thlypopsis_ornata,
 		7718	Thlypopsis_sordida,
@@ -17724,8 +17724,8 @@ BEGIN TREES;
 		7721	Thlypopsis_inornata,
 		7722	Hemispingus_ochraceus,
 		7723	Hemispingus_reyi,
-		7724	Hemispingus_frontalis,
-		7725	Hemispingus_melanotis,
+		7724	Sphenopsis_frontalis,
+		7725	Sphenopsis_melanotis,
 		7726	Xenospingus_concolor,
 		7727	Hemispingus_piurae,
 		7728	Incaspiza_watkinsi,
