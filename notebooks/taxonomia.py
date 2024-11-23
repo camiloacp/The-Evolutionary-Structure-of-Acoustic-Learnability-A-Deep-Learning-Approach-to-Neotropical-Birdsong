@@ -73,7 +73,11 @@ genus_family = [
     "fringillidae_chlorophonia", "fringillidae_spinus", "fringillidae_euphonia", "fringillidae_chlorophonia", "mitrospingidae_lamprospiza", "estrildidae_lonchura",
     "thraupidae_loriotus", "thraupidae_sporathraupis", "thraupidae_tephrophilus", "thraupidae_chalcothraupis", "thraupidae_stilpnia", "furnariidae_xiphorhynchus",
     "melanopareiidae_melanopareia", "onychorhynchidae_onychorhynchus", "onychorhynchidae_terenotriccus", "onychorhynchidae_myiobius", "passeridae_passer", "ploceidae_ploceus",
-    "rhodinocichlidae_rosea", "rhinocryptidae_scytalopus", "rhodinocichlidae_rhodinocichla", "tityridae_tityra", "tyrannidae_uromyias"
+    "rhodinocichlidae_rosea", "rhinocryptidae_scytalopus", "rhodinocichlidae_rhodinocichla", "tityridae_tityra", "tyrannidae_uromyias", "rhamphastidae_aulacorhynchus",
+    "rhamphastidae_ramphastos", "rhamphastidae_selenidera", "rhamphastidae_pteroglossus", "rhamphastidae_andigena", "capitonidae_capito", "capitonidae_eubucco", "picidae_picumnus",
+    "picidae_melanerpes", "picidae_piculus", "picidae_celeus", "picidae_campephilus", "falconidae_micrastur", "falconidae_herpetotheres", "falconidae_ibycter", "falconidae_daptrius",
+    "falconidae_caracara", "falconidae_milvago", "falconidae_falco", "psittacidae_touit", "psittacidae_bolborhynchus", "psittacidae_brotogeris", "psittacidae_forpus",
+    "psittacidae_pionus", "psittacidae_ara"
 ]
 
 suborder = {
@@ -170,5 +174,10 @@ suborder = {
     'Muscicapidae': 'passeri',
     'Turdidae': 'passeri',
     'Sturnidae': 'passeri',
-    'Icteridae': 'passeri'
+    'Icteridae': 'passeri',
+    'Capitonidae': 'Piciformes',
+    'Rhamphastidae': 'Piciformes',
+    'Psittacidae': 'Psittaciformes',
+    'Falconidae': 'Falconiformes',
+    'Picidae': 'Piciformes'
 }
