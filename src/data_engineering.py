@@ -36,9 +36,9 @@ def columns() -> pd.MultiIndex:
     return columns.sort_values()
 
 def compute_features(
-    audio_path, 
-    year=None, 
-    rank=None, 
+    audio_path,
+    year=None,
+    rank=None,
     track_index=None
     ) -> pd.DataFrame:
     """
@@ -59,7 +59,7 @@ def compute_features(
     """
     features = pd.Series(index=columns(), dtype=np.float32)
     warnings.filterwarnings('error', module='librosa')
-    
+
     if year and rank:
         features["year"] = year
         features["rank"] = rank
@@ -143,7 +143,7 @@ def validate_mp3_files(directory) -> list:
         for file in files:
             if file[-4:] == ".mp3":
                 file_locations.append(os.path.join(subdir, file))
-    
+
     return file_locations
 
 import pandas as pd
@@ -173,7 +173,7 @@ def process_features(
         index = i[:-4].split("/")[-1]
         series_list.append(
             compute_features(
-                track_index=index, 
+                track_index=index,
                 audio_path=i
                 )
             )
@@ -186,5 +186,3 @@ def process_features(
     df.to_csv(f"{dir_name}/{table_name}.csv")
 
     return df
-
-
