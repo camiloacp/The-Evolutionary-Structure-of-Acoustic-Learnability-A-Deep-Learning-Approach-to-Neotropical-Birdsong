@@ -13,3 +13,9 @@ cantos_prueba
 ELEData
 ELECode
 data
+eval "$(ssh-agent -s)"
+*.pub
+*.jpeg
+*.pkl
+logs
+model
