@@ -7,20 +7,16 @@ readme = "README.md"
 package-mode = false
 
 [tool.poetry.dependencies]
-python = "^3.9"
-pandas = "^2.2.2"
-numpy = "^1.26.4"
-scikit-learn = "^1.4.2"
-scipy = "^1.13.0"
-datasets = "^2.18"
-huggingface-hub = "^0.22.2"
-librosa = "^0.10.1"
-transformers = "^4.39.3"
-xenopy = "^0.0.4"
-matplotlib = "^3.9.1"
-feature-engine = "^1.8.0"
-optuna = "^4.0.0"
-
+python = ">=3.11,<3.12"
+ipykernel = "^6.29.5"
+keras-cv = "^0.9.0"
+tensorflow = "^2.18.0"
+pydantic = "^2.10.5"
+pycocotools = "^2.0.8"
+tensorflow-io = "^0.37.1"
+scikit-learn = "^1.6.1"
+pandas = "^2.2.3"
+jinja2 = "^3.1.5"
 
 [tool.poetry.group.dev.dependencies]
 ipykernel = "^6.29.5"

@@ -1,0 +1,3 @@
+repos:
+  # Websec hook is MANDATORY, DO NOT comment it.
+  - repo: []

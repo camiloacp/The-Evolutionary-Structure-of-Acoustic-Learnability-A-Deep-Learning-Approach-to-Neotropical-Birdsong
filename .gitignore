@@ -8,7 +8,14 @@ cantos_prueba
 *.csv
 *.tre
 *.xlsx
-ELECode
-ELEData
+*.mp3
 *.zip
-transfor_songs
+ELEData
+ELECode
+data
+eval "$(ssh-agent -s)"
+*.pub
+*.jpeg
+*.pkl
+logs
+model
