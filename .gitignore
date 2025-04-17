@@ -19,3 +19,4 @@ eval "$(ssh-agent -s)"
 *.pkl
 logs
 model
+*.h5
