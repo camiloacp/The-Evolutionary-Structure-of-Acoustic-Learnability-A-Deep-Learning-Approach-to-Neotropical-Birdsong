@@ -153,7 +153,11 @@ class ImagePreprocessor:
     lectura, redimensionamiento, aumentación y creación de datasets.
     """
 
-    def __init__(self, config: Optional[ImagePreprocessorConfig] = None):
+    def __init__(
+        self,
+        config: Optional[ImagePreprocessorConfig] = None,
+        label_encoder: Optional[LabelEncoder] = None
+        ):
         """
         Inicializa el preprocesador de imágenes.
 
@@ -161,7 +165,7 @@ class ImagePreprocessor:
             config: Configuración para el preprocesamiento. Si es None, se usa la configuración por defecto.
         """
         self.config = config or ImagePreprocessorConfig()
-        self.label_encoder = None
+        self.label_encoder = label_encoder
         self._create_augmenter()
 
     def _create_augmenter(self):
@@ -193,7 +197,8 @@ class ImagePreprocessor:
         Args:
             labels: Lista de etiquetas de clase.
         """
-        self.label_encoder = LabelEncoder()
+        if self.label_encoder is None:
+            self.label_encoder = LabelEncoder()
         self.label_encoder.fit(labels)
 
     def encode_labels(self, labels: List[str]) -> tf.Tensor:
@@ -209,7 +214,9 @@ class ImagePreprocessor:
         if self.label_encoder is None:
             self.fit_label_encoder(labels)
 
+        # Transformamos a etiquetas numéricas
         integer_encoded = self.label_encoder.transform(labels)
+        # Convertimos a one-hot
         return tf.one_hot(integer_encoded, depth=self.config.n_classes)
 
     def read_image(self, path_img: str) -> tf.Tensor:
