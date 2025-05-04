@@ -1,92 +1,227 @@
-# **Bird Songs**
+# Proyecto de Clasificación de Aves mediante Sonidos
 
-![Tangara multicolor](https://cdn.download.ams.birds.cornell.edu/api/v1/asset/325521391/2400)
+Este proyecto implementa un sistema completo para el análisis, procesamiento y clasificación de sonidos de aves utilizando técnicas avanzadas de aprendizaje profundo.
 
-## Schema
+## Estructura del Proyecto
 
-> - Objetivo
-> - Universo
-> - Data
-> - To Do
-> - Roadmap
-> - Modelos base
-> - Referencias
+El proyecto está organizado en dos carpetas principales:
 
-## **Objetivo general:**
+### 1. Carpeta `src`
 
-- Clasificar especies de Passeriformes neotropicales de acuerdo a su canto entendiendo sus dinamicas evolutivas
+Contiene los módulos de código Python con la implementación de las clases y funciones principales del sistema:
 
-## Universo
+- **image_preprocessor.py**: Preprocesamiento y aumento de imágenes de espectrogramas.
+- **model_trainer.py**: Entrenamiento de modelos utilizando diferentes arquitecturas de redes neuronales.
+- **predictor.py**: Realización de predicciones con modelos entrenados.
+- **spectograms.py**: Transformación de archivos de audio en espectrogramas.
+- **taxonomia.py**: Manejo de la taxonomía de aves.
+- **data_engineering.py**: Funciones para manipulación y transformación de datos.
+- **gradcam.py**: Implementación de GradCAM para visualizar áreas de decisión del modelo.
+- **incertidumbres.py**: Análisis de incertidumbres en las predicciones.
 
-![Taxonomia](https://static.todamateria.com.br/upload/hi/er/hierarquiataxonomica-cke.jpg)
+### 2. Carpeta `notebooks`
 
-- **Calidad del canto**
+Contiene los cuadernos Jupyter (notebooks) que demuestran el flujo de trabajo completo:
 
-  > A, B y C
+- **00_Download data.ipynb**: Descarga de datos de audio de aves.
+- **01_Paths.ipynb**: Configuración de rutas y directorios de trabajo.
+- **02_Overview.ipynb**: Visión general del dataset y análisis exploratorio.
+- **05_fine-tune-efficientnet-b7.ipynb**: Ajuste fino del modelo EfficientNetB7.
+- **06_fine_tune_efficientnetv2_L.ipynb**: Ajuste fino del modelo EfficientNetV2L.
+- **07_mobilenet_v3.ipynb**: Entrenamiento utilizando MobileNetV3.
+- **08_resnet_v2_152.ipynb**: Entrenamiento utilizando ResNetV2-152.
+- **09_GradCam.ipynb**: Visualización de mapas de activación con GradCAM.
+- **10_Shap.ipynb**: Análisis de atribución de características con SHAP.
+- **11_Incertidumbres.ipynb**: Evaluación de incertidumbres en las predicciones.
 
-- **Características del canto**
+## Componentes Principales
 
-  > 1. Longitud de onda: Se refiere a la longitud total de la señal de audio, medida en tiempo. En el contexto digital, esto puede ser la duración del archivo de audio en segundos.
-  > 2. Intensidad mínima (RMS mínima): Es el valor mínimo de la raíz cuadrada media (RMS) de la amplitud de la señal de audio. La RMS proporciona una medida de la potencia o energía de la señal. La intensidad mínima indica el punto más bajo de energía en la señal de audio.
-  > 3. Intensidad media (RMS media): Es el valor medio de la RMS de la señal de audio. Esto da una medida promedio de la energía a lo largo de toda la señal, ofreciendo una idea de cuán "fuerte" o "suave" es la señal en promedio.
-  > 4. Intensidad máxima (RMS máxima): Es el valor máximo de la RMS de la señal de audio. Esto indica el punto más alto de energía en la señal de audio.
-  > 5. Tonos principales: Es el número de tonos dominantes en la señal de audio, a menudo relacionados con las frecuencias fundamentales de los sonidos predominantes en la señal.
-  > 6. Melodía: Representa la secuencia de notas musicales en una señal de audio. La melodía promedio puede ser calculada a partir de la frecuencia fundamental predominante en la señal de audio.
-  > 7. Centroide espectral: Es el centroide espectral promedio de la señal de audio. Indica el "centro de masa" del espectro de frecuencias, proporcionando una medida de la "brillantez" de la señal.
-  > 8. Rolloff espectral: Es la frecuencia por debajo de la cual se encuentra una cierta cantidad de la energía espectral, comúnmente el 85% o 95% de la energía total. Esto ayuda a caracterizar el contenido de alta frecuencia de la señal.
-  > 9. Contraste espectral: Es la diferencia entre los picos y los valles en un espectro de frecuencias. Indica la variabilidad de la energía a lo largo de diferentes bandas de frecuencia.
-  > 10. Ancho de banda espectral: Es el rango de frecuencias en el cual se encuentra la mayor parte de la energía de la señal de audio. Es una medida de la dispersión de las frecuencias alrededor del centroide espectral.
-  > 11. Croma: Es una representación de la distribución de energía por tonos, agrupando las frecuencias en 12 clases que corresponden a las 12 notas de la escala musical.
-  > 12. Tempo: Es la velocidad o el ritmo de una pieza musical, usualmente medido en beats per minute (BPM).
-  > 13. Pulso: Representa la regularidad y la estructura rítmica de una señal de audio.
-  > 14. Coeficientes MFCC (Mel-Frequency Cepstral Coefficients): Son los coeficientes que representan el espectro de potencia de una señal de audio, comprimidos en una escala de frecuencia mel. Se usan ampliamente en el reconocimiento de voz y análisis de audio.
-  > 15. RMS (Root Mean Square): Es la raíz cuadrada media de la señal de audio, proporcionando una medida de la energía o potencia de la señal.
-  > 16. Cens: Es una versión suavizada del croma, útil para la identificación robusta de la tonalidad.
-  > 17. Piptrack: Representa los picos en la señal de audio, usados para identificar las frecuencias prominentes.
-  > 18. Cruces por cero: Es la tasa a la que la señal cambia de signo (de positivo a negativo o viceversa), usada para analizar la frecuencia de la señal.
-  > 19. Cromagrama CQT: Es una representación del croma utilizando una transformada de calidad constante, proporcionando una representación del contenido armónico.
-  > 20. Cromagrama CENS: Es una versión suavizada del cromagrama CQT, utilizado para análisis de patrones tonales.
-  > 21. Melspectrogram: Es una representación del espectro de potencia en una escala de frecuencia mel, que es más alineada con la percepción humana del sonido.
-  > 22. Polynomial coefficients: Son los coeficientes de un polinomio ajustado a la señal de audio, usados para modelar variaciones en la señal.
-  > 23. Fourier tempogram: Es una representación del ritmo basada en la transformada de Fourier, mostrando la periodicidad temporal de la señal.
+### Preprocesamiento de Imágenes
 
-- **Passeriformes**
+El componente `ImagePreprocessor` (en `image_preprocessor.py`) permite:
 
-## **Data**
+- Cargar y transformar imágenes de espectrogramas.
+- Aplicar técnicas de aumento de datos específicas para audio:
+  - Time Masking: Enmascaramiento temporal de filas.
+  - Frequency Masking: Enmascaramiento de frecuencias (columnas).
+  - Ajustes de brillo, desenfoque, y enmascaramiento de cuadrícula.
+- Generar datasets de TensorFlow optimizados para entrenamiento y validación.
 
-- [XenoCanto](https://xeno-canto.org/)
+```python
+# Ejemplo de uso
+from src.image_preprocessor import ImagePreprocessor, ImagePreprocessorConfig
 
-## **To Do**
+# Configuración personalizada
+config = ImagePreprocessorConfig(
+    img_size=(128, 256),
+    channels=1,
+    batch_size=64,
+    aug_proba=0.8
+)
 
-- Conseguir información extra (colecciones)
-- Subir sonidos al repo
-- Analizar la muestra
-  - Analisis del espectograma
-  - Analisis usando librosa
-- Filogenia
-  - Construir o usar una preexistente
-  - Análisis evolutivos
-- Modelo de clasificación
-  - Realizar primera versión con muestreo
-  - Levantar infra para entrenar modelo final
-- Crear documento
-- Publicar
+# Inicializar el preprocesador
+preprocessor = ImagePreprocessor(config)
 
-## **Modelos Base**
+# Crear datasets para entrenamiento
+train_ds = preprocessor.create_training_dataset(df_train)
+val_ds = preprocessor.create_validation_dataset(df_val)
+```
 
-- [HuggingFace Models](https://huggingface.co/dima806/bird_sounds_classification)
-- [Wavml-large](https://huggingface.co/saadashraf/birds_model)
-- [Wav2vec2-base](https://huggingface.co/Saads/bird_classification_model)
-- [Whisper-base](https://huggingface.co/openai/whisper-base)
+### Generación de Espectrogramas
 
-## **Referencias modelos**
+El componente `SpectogramConfig` (en `spectograms.py`) permite:
 
-- **Papers**:
-  - https://arxiv.org/pdf/2404.10420
-  - https://arxiv.org/pdf/2403.10380
-  - https://arxiv.org/pdf/2312.15824
-  - https://arxiv.org/pdf/2303.10757
+- Convertir archivos de audio de aves en espectrogramas mel.
+- Configurar parámetros de procesamiento de audio (tasa de muestreo, FFT, etc.).
+- Procesar lotes de archivos en paralelo.
+- Normalizar y guardar espectrogramas como imágenes JPEG.
 
-## **Referencias estudios de canto de aves**
+```python
+# Ejemplo de uso
+from src.spectograms import SpectogramConfig
 
-....
+# Inicializar configuración
+spectogram_generator = SpectogramConfig(
+    audio_dir="data/audio",
+    output_dir="data/spectograms",
+    img_size=(224, 224),
+    sample_rate=32000,
+    seconds=5
+)
+
+# Procesar datos y generar espectrogramas
+data = spectogram_generator.load_data()
+data_with_duration = spectogram_generator.duration("audio_path")
+spectogram_data, errors = spectogram_generator.process_data()
+```
+
+### Entrenamiento de Modelos
+
+El componente `ModelTrainer` (en `model_trainer.py`) permite:
+
+- Entrenar modelos de clasificación utilizando diferentes arquitecturas:
+  - ResNet152V2
+  - MobileNetV3Large
+  - EfficientNetV2L
+  - EfficientNetB7
+- Configurar ajuste fino (fine-tuning) de capas específicas.
+- Implementar técnicas de regularización (dropout, suavizado de etiquetas).
+- Monitoreo del entrenamiento con callbacks optimizados.
+
+```python
+# Ejemplo de uso
+from src.model_trainer import ModelTrainer
+
+# Inicializar el entrenador con la arquitectura deseada
+trainer = ModelTrainer(
+    model_name="EfficientNetV2L",
+    img_shape=(224, 224, 1),
+    n_classes=667,
+    dropout_rate=0.2,
+    label_smoothing=0.1,
+    weights="imagenet",
+    fine_tune_layers=200
+)
+
+# Entrenar el modelo
+model = trainer.train(
+    train_dataset=train_ds,
+    val_dataset=val_ds,
+    learning_rate=1e-4,
+    epochs=20
+)
+```
+
+### Predicción
+
+El componente `Predictor` (en `predictor.py`) permite:
+
+- Cargar modelos entrenados para realizar predicciones.
+- Procesar imágenes individuales o lotes para clasificación.
+- Obtener las N clases más probables para cada predicción.
+- Integrar el preprocesamiento con el proceso de predicción.
+
+```python
+# Ejemplo de uso
+from src.predictor import Predictor
+
+# Inicializar el predictor
+predictor = Predictor(
+    model_name="EfficientNetV2L",
+    model_path="models/EfficientNetV2L_best.h5",
+    img_shape=(224, 224, 1),
+    n_classes=667
+)
+
+# Predecir clase para una imagen
+class_id, probability = predictor.predict_single("path/to/spectogram.jpg")
+
+# Obtener top-5 predicciones
+top_predictions = predictor.predict_with_top_k("path/to/spectogram.jpg", k=5)
+```
+
+### Visualización y Explicabilidad
+
+El proyecto incluye componentes avanzados para interpretación de modelos:
+
+- **GradCAM** (en `gradcam.py`): Visualiza regiones importantes en el espectrograma que contribuyen a la predicción.
+- **SHAP** (en el notebook `10_Shap.ipynb`): Análisis de atribución de características para entender el comportamiento del modelo.
+- **Incertidumbres** (en `incertidumbres.py`): Métodos para cuantificar la incertidumbre en las predicciones, importante para aplicaciones críticas.
+
+## Flujo de Trabajo
+
+El proceso completo de trabajo con este proyecto sigue estos pasos:
+
+1. **Preparación de Datos**:
+
+   - Descargar archivos de audio de aves (`00_Download data.ipynb`)
+   - Convertir audio en espectrogramas (`spectograms.py`)
+   - Organizar imágenes en estructura de directorios
+
+2. **Preprocesamiento**:
+
+   - Configurar el preprocesador de imágenes (`image_preprocessor.py`)
+   - Aplicar técnicas de aumento de datos
+   - Crear datasets para entrenamiento y validación
+
+3. **Entrenamiento**:
+
+   - Seleccionar arquitectura y configurar hiperparámetros
+   - Entrenar modelo con ajuste fino (notebooks 05-08)
+   - Evaluar rendimiento y guardar mejor modelo
+
+4. **Análisis y Explicabilidad**:
+
+   - Visualizar regiones de decisión con GradCAM (notebook 09)
+   - Analizar importancia de características con SHAP (notebook 10)
+   - Evaluar incertidumbres en las predicciones (notebook 11)
+
+5. **Predicción**:
+   - Configurar el predictor con el modelo entrenado
+   - Realizar predicciones en nuevos datos
+   - Analizar resultados y probablidades
+
+## Requisitos y Dependencias
+
+El proyecto utiliza las siguientes bibliotecas principales:
+
+- TensorFlow 2.x: Framework principal para modelos de aprendizaje profundo
+- Keras: API de alto nivel para redes neuronales
+- Librosa: Análisis de audio y extracción de características
+- Numpy/Pandas: Manejo y procesamiento de datos
+- Matplotlib: Visualización de datos
+- OpenCV (cv2): Procesamiento de imágenes
+- Scikit-learn: Herramientas de aprendizaje automático
+
+## Uso del proyecto
+
+Para utilizar este proyecto, se recomienda seguir el flujo de trabajo demostrado en los notebooks, comenzando con la descarga de datos y siguiendo el proceso hasta la predicción y análisis.
+
+Los módulos en la carpeta `src` pueden importarse directamente para aplicaciones personalizadas o integrarse en otros proyectos de clasificación basados en sonido.
+
+## Consideraciones y Limitaciones
+
+- El rendimiento depende de la calidad de los espectrogramas generados.
+- Las grabaciones de audio deben tener una duración mínima para generar espectrogramas adecuados.
+- El entrenamiento de modelos como EfficientNetV2L requiere significativos recursos computacionales (GPU recomendada).
+- Para aplicaciones en tiempo real, considerar modelos más ligeros como MobileNetV3Large.
