@@ -20,3 +20,4 @@ eval "$(ssh-agent -s)"
 logs
 model
 *.h5
+*.mp3

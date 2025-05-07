@@ -18,10 +18,11 @@ def columns() -> pd.MultiIndex:
     Returns:
         pd.MultiIndex: A multi-index column structure with three levels: feature, statistics, and number.
     """
-    feature_sizes = dict(chroma_stft=12, chroma_cqt=12, chroma_cens=12,
-                         tonnetz=6, mfcc=12, rmse=1, zcr=1,
-                         spectral_centroid=1, spectral_bandwidth=1,
-                         spectral_contrast=7, spectral_rolloff=1)
+    feature_sizes = dict(chroma_stft=12, chroma_cqt=12, chroma_cens=12, tonnetz=6, mfcc=40, rmse=1, zcr=1,
+                         spectral_centroid=1, spectral_bandwidth=1, spectral_contrast=7, spectral_rolloff=1,
+                         mel_spectrogram = 128, delta_mfcc = 40, delta2_mfcc = 40, autocorrelation = 1,
+                         tempogram = 384, onset_strength = 1)
+
     moments = ('mean', 'std', 'skew', 'kurtosis', 'median', 'min', 'max')
 
     columns = []
@@ -67,58 +68,57 @@ def compute_features(
         features["track_index"] = track_index
 
     def feature_stats(name, values):
-        features[name, 'mean'] = np.mean(values, axis=1)
-        features[name, 'std'] = np.std(values, axis=1)
-        features[name, 'skew'] = stats.skew(values, axis=1)
-        features[name, 'kurtosis'] = stats.kurtosis(values, axis=1)
-        features[name, 'median'] = np.median(values, axis=1)
-        features[name, 'min'] = np.min(values, axis=1)
-        features[name, 'max'] = np.max(values, axis=1)
+        if len(values.shape) == 1:
+            values = values.reshape(-1, 1)
+
+        # Use loc to ensure correct assignment in MultiIndex
+        try:
+            features.loc[(name, 'mean')] = np.mean(values, axis=1)
+            features.loc[(name, 'std')] = np.std(values, axis=1)
+            features.loc[(name, 'skew')] = stats.skew(values, axis=1)
+            features.loc[(name, 'kurtosis')] = stats.kurtosis(values, axis=1)
+            features.loc[(name, 'median')] = np.median(values, axis=1)
+            features.loc[(name, 'min')] = np.min(values, axis=1)
+            features.loc[(name, 'max')] = np.max(values, axis=1)
+        except KeyError as e:
+            print(f"KeyError encountered: {e}")
+            print(f"Available feature columns: {features.index}")
+        except Exception as e:
+            print(f"Error processing {name}: {e}")
 
     try:
         filepath = audio_path
         x, sr = librosa.load(filepath, sr=None, mono=True)  # kaiser_fast
 
-        f = librosa.feature.zero_crossing_rate(x, frame_length=2048, hop_length=512)
-        feature_stats('zcr', f)
-
-        cqt = np.abs(librosa.cqt(x, sr=sr, hop_length=512, bins_per_octave=12,
-                                 n_bins=7*12, tuning=None))
+        feature_stats('onset_strength', np.abs(librosa.onset.onset_strength(y=x, sr=sr)).reshape(1, -1))
+        feature_stats('zcr', librosa.feature.zero_crossing_rate(x, frame_length=2048, hop_length=512))
+        cqt = np.abs(librosa.cqt(x, sr=sr, hop_length=512, bins_per_octave=12, n_bins=7*12, tuning=None))
         assert cqt.shape[0] == 7 * 12
         assert np.ceil(len(x)/512) <= cqt.shape[1] <= np.ceil(len(x)/512)+1
 
-        f = librosa.feature.chroma_cqt(C=cqt, n_chroma=12, n_octaves=7)
-        feature_stats('chroma_cqt', f)
-        f = librosa.feature.chroma_cens(C=cqt, n_chroma=12, n_octaves=7)
-        feature_stats('chroma_cens', f)
-        f = librosa.feature.tonnetz(chroma=f)
-        feature_stats('tonnetz', f)
+        feature_stats('chroma_cqt', librosa.feature.chroma_cqt(C=cqt, n_chroma=12, n_octaves=7))
+        feature_stats('chroma_cens', librosa.feature.chroma_cens(C=cqt, n_chroma=12, n_octaves=7))
+        y = librosa.effects.harmonic(x)
+        feature_stats('tonnetz', librosa.feature.tonnetz(y=y, sr=sr))
 
-        del cqt
         stft = np.abs(librosa.stft(x, n_fft=2048, hop_length=512))
         assert stft.shape[0] == 1 + 2048 // 2
         assert np.ceil(len(x)/512) <= stft.shape[1] <= np.ceil(len(x)/512)+1
-        del x
 
-        f = librosa.feature.chroma_stft(S=stft**2, n_chroma=12)
-        feature_stats('chroma_stft', f)
+        feature_stats('tempogram', librosa.feature.tempogram(y=x, sr=sr))
+        feature_stats('chroma_stft', librosa.feature.chroma_stft(S=stft**2, n_chroma=12))
+        feature_stats('rmse', librosa.feature.rms(S=stft))
+        feature_stats('spectral_centroid', librosa.feature.spectral_centroid(S=stft))
+        feature_stats('spectral_bandwidth', librosa.feature.spectral_bandwidth(S=stft))
+        feature_stats('spectral_contrast', librosa.feature.spectral_contrast(S=stft, n_bands=6))
+        feature_stats('spectral_rolloff', librosa.feature.spectral_rolloff(S=stft))
 
-        f = librosa.feature.rms(S=stft)
-        feature_stats('rmse', f)
-
-        f = librosa.feature.spectral_centroid(S=stft)
-        feature_stats('spectral_centroid', f)
-        f = librosa.feature.spectral_bandwidth(S=stft)
-        feature_stats('spectral_bandwidth', f)
-        f = librosa.feature.spectral_contrast(S=stft, n_bands=6)
-        feature_stats('spectral_contrast', f)
-        f = librosa.feature.spectral_rolloff(S=stft)
-        feature_stats('spectral_rolloff', f)
-
-        mel = librosa.feature.melspectrogram(sr=sr, S=stft**2)
-        del stft
-        f = librosa.feature.mfcc(S=librosa.power_to_db(mel), n_mfcc=20)
-        feature_stats('mfcc', f)
+        mel = librosa.feature.melspectrogram(sr=sr, S=stft**2, n_mels=128, fmax=10000)
+        feature_stats('mel_spectrogram', mel)
+        feature_stats('mfcc', librosa.feature.mfcc(S=librosa.power_to_db(mel), n_mfcc=40))
+        feature_stats('delta_mfcc', librosa.feature.delta(librosa.feature.mfcc(S=librosa.power_to_db(mel), n_mfcc=40)))
+        feature_stats('delta2_mfcc', librosa.feature.delta(librosa.feature.mfcc(S=librosa.power_to_db(mel), n_mfcc=40), order=2))
+        feature_stats('autocorrelation', librosa.autocorrelate(x).reshape(1, -1))
 
     except Exception as e:
         pass
@@ -143,10 +143,7 @@ def validate_mp3_files(directory) -> list:
         for file in files:
             if file[-4:] == ".mp3":
                 file_locations.append(os.path.join(subdir, file))
-
     return file_locations
-
-import pandas as pd
 
 def process_features(
     dir_audio_files: list,
