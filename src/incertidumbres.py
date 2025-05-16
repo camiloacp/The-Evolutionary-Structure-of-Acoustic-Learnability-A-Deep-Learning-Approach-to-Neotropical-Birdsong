@@ -300,7 +300,7 @@ def plot_combinado(ruta_imagen, especie_df, label, titulo_especie, predicted_pro
         height = p.get_height()
         height_100 = height * 100
         if height > 0:
-            ax2.text(p.get_x() + p.get_width()/2., height + 0.01,
+            ax2.text(p.get_x() + p.get_width()/2., height,
                     f'{height_100:.1f}%', ha="center", fontsize=9)
 
     ax2.set_ylim(0, 1)
@@ -346,8 +346,8 @@ def plot_combinado(ruta_imagen, especie_df, label, titulo_especie, predicted_pro
         for i, bar in enumerate(bars):
             height = bar.get_height()
             height_100 = height * 100
-            if height > 0.01:  # Solo mostrar porcentajes significativos
-                ax3.text(bar.get_x() + bar.get_width()/2., height + 0.01,
+            if height > 0.001:  # Solo mostrar porcentajes significativos
+                ax3.text(bar.get_x() + bar.get_width()/2., height + 0.001,
                        f'{height_100:.1f}%', ha="center", fontsize=9)
 
         # Configurar etiquetas del eje X con los índices de las clases
@@ -355,7 +355,7 @@ def plot_combinado(ruta_imagen, especie_df, label, titulo_especie, predicted_pro
         ax3.set_xticklabels(top_indices, rotation=45, ha='right')
 
         # Mejoras estéticas adicionales
-        ax3.set_ylim([0, 1])
+        ax3.set_ylim([0, 0.02])
         ax3.set_ylabel('Probabilidad')
         ax3.set_title('Top 10 probabilidades con IC 95%',
                      fontsize=12, fontweight='bold', pad=10)
