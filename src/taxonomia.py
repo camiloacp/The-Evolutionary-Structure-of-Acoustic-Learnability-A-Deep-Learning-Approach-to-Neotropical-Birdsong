@@ -1,3 +1,6 @@
+from typing import Tuple, Dict, List, Set, Optional
+import pandas as pd
+
 def capitalize_family_genus(family_list):
     result = {}
     for item in family_list:
@@ -181,3 +184,72 @@ suborder = {
     'Falconidae': 'Falconiformes',
     'Picidae': 'Piciformes'
 }
+
+def sinonimias(df: pd.DataFrame, avonet1: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
+    """
+    Reemplaza nombres específicos de especies con sus sinónimos correspondientes.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame con la columna 'Specie'.
+    avonet1 : pd.DataFrame
+        DataFrame con la columna 'Species1'.
+
+    Returns
+    -------
+    Tuple[pd.DataFrame, pd.DataFrame]
+        DataFrames modificados con los nombres de especies reemplazados.
+    """
+    # Mapeo de sinonimias para avonet1
+    sinonimias_avonet1 = {
+        "Tangara_vitriolina": "Stilpnia_vitriolina",
+        "Tangara_nigrocincta": "Stilpnia_nigrocincta",
+        "Spodiornis_rusticus": "Haplospiza_rustica",
+        "Vireo_pallens": "Vireo_approximans",
+        "Tangara_palmarum": "Thraupis_palmarum",
+        "Tangara_glaucocolpa": "Thraupis_glaucocolpa",
+        "Tangara_episcopus": "Thraupis_episcopus",
+        "Maschalethraupis_surinama": "Tachyphonus_surinamus",
+        "Chrysocorypha_delatrii": "Tachyphonus_delatrii",
+        "Tangara_larvata": "Stilpnia_larvata",
+        "Tangara_heinei": "Stilpnia_heinei",
+        "Tangara_cyanoptera": "Stilpnia_cyanoptera",
+        "Tangara_cyanicollis": "Stilpnia_cyanicollis",
+        "Tangara_cayana": "Stilpnia_cayana",
+        "Pyriglena_leuconota": "Pyriglena_maura",
+        "Pseudocolaptes_boissonneauii": "Pseudocolaptes_boissonneautii",
+        "Polioptila_guianensis": "Polioptila_facilis",
+        "Islerothraupis_cristata": "Loriotus_cristatus",
+        "Grallaria_fenwickorum": "Grallaria_urraoensis",
+        "Islerothraupis_luctuosa": "Loriotus_luctuosus",
+        "Tangara_ruficervix": "Chalcothraupis_ruficervix",
+        "Euphonia_cyanocephala": "Chlorophonia_cyanocephala",
+        "Thripophaga_gutturata": "Cranioleuca_gutturata",
+        "Philydor_erythropterum": "Dendroma_erythroptera",
+        "Philydor_rufum": "Dendroma_rufa",
+        "Tangara_guttata": "Ixothraupis_guttata",
+        "Tangara_punctata": "Ixothraupis_punctata",
+        "Tangara_rufigula": "Ixothraupis_rufigula",
+        "Tangara_varia": "Ixothraupis_varia",
+        "Tangara_xanthogastra": "Ixothraupis_xanthogastra",
+        "Chloropipo_flavicapilla": "Xenopipo_flavicapilla"
+    }
+
+    # Mapeo de sinonimias para df
+    sinonimias_df = {
+        "Uromyias_agilis": "Anairetes_agilis",
+        "Xenops_rutilans": "Xenops_rutilus",
+        "Chloropipo_flavicapilla": "Xenopipo_flavicapilla",
+        "Premnornis_guttuliger": "Premnornis_guttuligera"
+        # "Gymnopithys_bicolor": "Gymnopithys_leucaspis" (comentado en el original)
+    }
+
+    # Aplicar reemplazos usando el método replace de pandas
+    for original, nuevo in sinonimias_avonet1.items():
+        avonet1['Species1'] = avonet1['Species1'].str.replace(original, nuevo)
+
+    for original, nuevo in sinonimias_df.items():
+        df['Especie'] = df['Especie'].str.replace(original, nuevo)
+
+    return df, avonet1
