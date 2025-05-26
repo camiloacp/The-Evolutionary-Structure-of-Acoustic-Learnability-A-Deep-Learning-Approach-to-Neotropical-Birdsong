@@ -12,6 +12,3 @@ default_language_version:
 default_stages: [pre-commit]
 
 default_install_hook_types: [pre-commit]
-
-# Utilizar el repositorio PyPI público para las dependencias
-pip_options: ["-i", "https://pypi.org/simple"]
