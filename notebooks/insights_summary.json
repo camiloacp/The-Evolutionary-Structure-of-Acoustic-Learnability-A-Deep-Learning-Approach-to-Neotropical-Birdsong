@@ -1,0 +1,12 @@
+{
+    "total_especies_analizadas": 624,
+    "f1_score_promedio": 0.858573717948718,
+    "f1_score_std": 0.06427557305923981,
+    "mejor_habitat": "Rock",
+    "peor_habitat": "Wetland",
+    "mejor_nivel_trofico": "Carnivore",
+    "peor_nivel_trofico": "Omnivore",
+    "clusters_optimos": 2,
+    "varianza_explicada_pca": 0.875317176705328,
+    "r2_random_forest": 0.7370103815309474
+}

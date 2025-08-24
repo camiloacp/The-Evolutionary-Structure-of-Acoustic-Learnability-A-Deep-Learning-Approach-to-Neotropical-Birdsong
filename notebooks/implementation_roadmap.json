@@ -1,0 +1,22 @@
+{
+    "immediate_actions": [
+        "Crear modelos especializados por h\u00e1bitat",
+        "Incluir caracter\u00edsticas morfol\u00f3gicas como features",
+        "Implementar validaci\u00f3n estratificada por clusters"
+    ],
+    "data_collection_priorities": [
+        "Especies peque\u00f1as en h\u00e1bitats diversos",
+        "Especies con bajo support actual",
+        "Especies outliers para entender factores especiales"
+    ],
+    "model_improvements": [
+        "T\u00e9cnicas de balanceo de datos",
+        "Ensemble methods por grupos ecol\u00f3gicos",
+        "Transfer learning entre especies similares"
+    ],
+    "research_questions": [
+        "\u00bfPor qu\u00e9 las especies sedentarias tienen mejor rendimiento?",
+        "\u00bfQu\u00e9 factores vocales explican los outliers?",
+        "\u00bfC\u00f3mo influye la complejidad del canto en las m\u00e9tricas?"
+    ]
+}

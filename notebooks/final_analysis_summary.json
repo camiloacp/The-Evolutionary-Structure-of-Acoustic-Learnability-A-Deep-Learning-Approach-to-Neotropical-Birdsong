@@ -1,0 +1,14 @@
+{
+    "total_species_analyzed": 624,
+    "regression_r_squared": 0.04626575853840198,
+    "regression_adj_r_squared": 0.02273613087076387,
+    "pca_variance_explained": 0.875317176705328,
+    "optimal_clusters": 2,
+    "outliers_detected": 24,
+    "best_habitat": "Rock",
+    "worst_habitat": "Wetland",
+    "best_trophic_level": "Carnivore",
+    "worst_trophic_level": "Omnivore",
+    "significant_predictors_count": 1,
+    "random_forest_r2": 0.7370103815309474
+}

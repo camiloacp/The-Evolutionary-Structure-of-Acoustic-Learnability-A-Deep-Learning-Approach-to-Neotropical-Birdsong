@@ -260,7 +260,7 @@ def plot_combinado(ruta_imagen, especie_df, label, titulo_especie, predicted_pro
     try:
         imagen = cargar_imagen_redimensionada(ruta_imagen)
         ax1.imshow(imagen.numpy().astype(np.uint8))
-        ax1.set_title(f"Espectrograma: {titulo_especie}")
+        ax1.set_title(f"Mel Spectrogram\n{titulo_especie}", fontsize=15, fontweight='bold', pad=15)
         ax1.axis('off')
     except Exception as e:
         print(f"Error al cargar la imagen: {e}")
@@ -272,38 +272,39 @@ def plot_combinado(ruta_imagen, especie_df, label, titulo_especie, predicted_pro
     # Ordenar datos
     especie_df = especie_df.sort_values(by="prediccion_mc", ascending=True).reset_index(drop=True)
 
-    # Crear colores personalizados
-    colores = ['#FF4136'] * len(especie_df)  # Color rojo para todas las barras
+    # Crear colores personalizados - colores más apropiados para publicación científica
+    colores = ['#D73027'] * len(especie_df)  # Color rojo más suave para todas las barras
     indice_label = especie_df[especie_df['prediccion_mc'] == label].index
     for idx in indice_label:
-        colores[idx] = '#2ECC40'  # Color verde para las barras con label correcto
+        colores[idx] = '#1A9850'  # Color verde más profesional para las barras correctas
+
+    # Convertir proporciones a porcentajes para el gráfico
+    especie_df_porcentajes = especie_df.copy()
+    especie_df_porcentajes["proportion"] = especie_df_porcentajes["proportion"] * 100
 
     # Crear el gráfico de barras
     sns.barplot(
-        x=especie_df['prediccion_mc'],
-        y=especie_df["proportion"],
+        x=especie_df_porcentajes['prediccion_mc'],
+        y=especie_df_porcentajes["proportion"],
         palette=colores,
-        edgecolor="black",
-        linewidth=0.8,
         ax=ax2
     )
 
     # Configurar el gráfico de incertidumbres
-    ax2.set_title(f'Distribución de predicciones',
-                fontsize=12, fontweight='bold', pad=10)
-    ax2.set_xlabel('Clase predicha', fontsize=10)
-    ax2.set_ylabel('Proporción', fontsize=10)
+    ax2.set_title('Monte Carlo Dropout Predictions',
+                fontsize=15, fontweight='bold', pad=15)
+    ax2.set_xlabel('Predicted Class', fontsize=14, fontweight='bold')
+    ax2.set_ylabel('Frequency (%)', fontsize=14, fontweight='bold')
     ax2.grid(axis='y', linestyle='--', alpha=0.7)
 
     # Añadir valores sobre las barras
     for i, p in enumerate(ax2.patches):
         height = p.get_height()
-        height_100 = height * 100
         if height > 0:
-            ax2.text(p.get_x() + p.get_width()/2., height,
-                    f'{height_100:.1f}%', ha="center", fontsize=9)
+            ax2.text(p.get_x() + p.get_width()/2., height + 2,
+                    f'{height:.1f}%', ha="center", fontsize=12)
 
-    ax2.set_ylim(0, 1)
+    ax2.set_ylim(0, 100)
 
     # Tercer subplot: Top 10 probabilidades con intervalos de confianza (si se proporciona predicted_probabilities)
     if predicted_probabilities is not None and etiqueta_real is not None:
@@ -317,53 +318,49 @@ def plot_combinado(ruta_imagen, especie_df, label, titulo_especie, predicted_pro
         if etiqueta_real not in top_indices:
             top_indices = np.append(top_indices, etiqueta_real)
 
-        # Preparar datos solo para las clases seleccionadas
-        pct_2p5 = np.array([np.percentile(predicted_probabilities[:, i], 2.5) for i in top_indices])
-        pct_97p5 = np.array([np.percentile(predicted_probabilities[:, i], 97.5) for i in top_indices])
+        # Preparar datos solo para las clases seleccionadas y convertir a porcentajes
+        pct_2p5 = np.array([np.percentile(predicted_probabilities[:, i], 2.5) for i in top_indices]) * 100
+        pct_97p5 = np.array([np.percentile(predicted_probabilities[:, i], 97.5) for i in top_indices]) * 100
 
-        # Crear colores personalizados para las barras - todos rojos por defecto
-        colores_prob = ['#FF4136'] * len(top_indices)
+        # Crear colores personalizados para las barras - colores profesionales
+        colores_prob = ['#D73027'] * len(top_indices)  # Color rojo más suave
 
         # Encontrar la posición de la etiqueta real y cambiar a verde
         for i, idx in enumerate(top_indices):
             if idx == etiqueta_real:
-                colores_prob[i] = '#2ECC40'  # Verde para la clase real
+                colores_prob[i] = '#1A9850'  # Verde profesional para la clase real
                 break
 
         # Crear barras con colores personalizados
         bars = ax3.bar(range(len(top_indices)), pct_97p5,
-                      color=colores_prob,
-                      edgecolor='black',
-                      linewidth=0.8)
+                      color=colores_prob)
 
         # Mostrar el intervalo de confianza inferior
-        ax3.bar(range(len(top_indices)), pct_2p5-0.02,
-               color='white',
-               linewidth=1,
-               edgecolor='white')
+        ax3.bar(range(len(top_indices)), pct_2p5-0.1,
+               color='white')
 
         # Añadir valores de porcentaje sobre las barras
         for i, bar in enumerate(bars):
             height = bar.get_height()
-            height_100 = height * 100
-            if height > 0.001:  # Solo mostrar porcentajes significativos
-                ax3.text(bar.get_x() + bar.get_width()/2., height + 0.001,
-                       f'{height_100:.1f}%', ha="center", fontsize=9)
+            if height > 0.1:  # Solo mostrar porcentajes significativos (mayor a 0.1%)
+                ax3.text(bar.get_x() + bar.get_width()/2., height + 0.05,
+                       f'{height:.1f}%', ha="center", fontsize=12)
 
         # Configurar etiquetas del eje X con los índices de las clases
         ax3.set_xticks(range(len(top_indices)))
-        ax3.set_xticklabels(top_indices, rotation=45, ha='right')
+        ax3.set_xticklabels(top_indices, ha='right')
 
         # Mejoras estéticas adicionales
-        ax3.set_ylim([0, 0.02])
-        ax3.set_ylabel('Probabilidad')
-        ax3.set_title('Top 10 probabilidades con IC 95%',
-                     fontsize=12, fontweight='bold', pad=10)
+        ax3.set_ylim([0, max(pct_97p5) * 1.2])  # Ajustar dinámicamente el límite superior
+        ax3.set_ylabel('Probability (%)', fontsize=14, fontweight='bold')
+        ax3.set_title('Probability Distribution (95% CI)',
+                     fontsize=15, fontweight='bold', pad=15)
         ax3.grid(axis='y', linestyle='--', alpha=0.7)
 
         # Añadir un texto explicativo sobre los intervalos de confianza
-        ax3.text(0.5, -0.15, "Las barras muestran el intervalo de confianza del 95%",
-                ha='center', va='center', transform=ax3.transAxes, fontsize=8, style='italic')
+        ax3.text(0.5, -0.15, "Error bars show 95% confidence intervals",
+                ha='center', va='center', transform=ax3.transAxes, fontsize=12, style='italic',
+                fontweight='bold')
     else:
         ax3.set_title("Datos de probabilidades no disponibles")
         ax3.axis('off')
@@ -373,5 +370,6 @@ def plot_combinado(ruta_imagen, especie_df, label, titulo_especie, predicted_pro
     if predicted_probabilities is not None:
         sns.despine(ax=ax3)
 
-    plt.tight_layout()
+    plt.tight_layout(pad=2.0)
+    plt.subplots_adjust(bottom=0.15)
     plt.show()
