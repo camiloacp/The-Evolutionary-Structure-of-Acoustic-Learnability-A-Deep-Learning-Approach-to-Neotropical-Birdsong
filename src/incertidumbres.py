@@ -85,9 +85,9 @@ def calcular_incertidumbre(dataset_espectrogramas, modelo, visualizar=False, ens
             # Para almacenar todas las probabilidades para los intervalos de confianza
             predicted_probabilities = np.zeros((ensemble_size, probabilidades_inferencia.shape[1]))
 
-            # MONTE CARLO DROPOUT: Múltiples pasadas con training=True
+            # MONTE CARLO DROPOUT: Múltiples pasadas
             for i in range(ensemble_size):
-                logits = modelo(imagen_batch, training=True)
+                logits = modelo(imagen_batch)
                 probabilidades = tf.nn.softmax(logits, axis=-1).numpy()
                 predicted_probabilities[i] = probabilidades[0]  # Guardamos todas las probabilidades
                 probabilidades_todas.append(probabilidades[0])
@@ -260,7 +260,7 @@ def plot_combinado(ruta_imagen, especie_df, label, titulo_especie, predicted_pro
     try:
         imagen = cargar_imagen_redimensionada(ruta_imagen)
         ax1.imshow(imagen.numpy().astype(np.uint8))
-        ax1.set_title(f"Mel Spectrogram\n{titulo_especie}", fontsize=15, fontweight='bold', pad=15)
+        ax1.set_title(f"A. Mel Spectrogram\n{titulo_especie}", fontsize=15, fontweight='bold', pad=15)
         ax1.axis('off')
     except Exception as e:
         print(f"Error al cargar la imagen: {e}")
@@ -291,7 +291,7 @@ def plot_combinado(ruta_imagen, especie_df, label, titulo_especie, predicted_pro
     )
 
     # Configurar el gráfico de incertidumbres
-    ax2.set_title('Monte Carlo Dropout Predictions',
+    ax2.set_title('B. Monte Carlo Dropout Predictions',
                 fontsize=15, fontweight='bold', pad=15)
     ax2.set_xlabel('Predicted Class', fontsize=14, fontweight='bold')
     ax2.set_ylabel('Frequency (%)', fontsize=14, fontweight='bold')
@@ -353,7 +353,7 @@ def plot_combinado(ruta_imagen, especie_df, label, titulo_especie, predicted_pro
         # Mejoras estéticas adicionales
         ax3.set_ylim([0, max(pct_97p5) * 1.2])  # Ajustar dinámicamente el límite superior
         ax3.set_ylabel('Probability (%)', fontsize=14, fontweight='bold')
-        ax3.set_title('Probability Distribution (95% CI)',
+        ax3.set_title('C. Probability Distribution (95% CI)',
                      fontsize=15, fontweight='bold', pad=15)
         ax3.grid(axis='y', linestyle='--', alpha=0.7)
 
