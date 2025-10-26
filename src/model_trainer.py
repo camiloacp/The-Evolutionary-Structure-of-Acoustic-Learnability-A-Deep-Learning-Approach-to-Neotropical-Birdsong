@@ -118,7 +118,7 @@ class ModelTrainer:
 
         # Construir el modelo completo
         x = base_model(x)
-        x = layers.Dropout(self.dropout_rate, name="top_dropout")(x)
+        x = layers.Dropout(self.dropout_rate, name="top_dropout")(x, training=True)
         outputs = layers.Dense(self.n_classes, name="logits")(x)
 
         # Crear y compilar el modelo
