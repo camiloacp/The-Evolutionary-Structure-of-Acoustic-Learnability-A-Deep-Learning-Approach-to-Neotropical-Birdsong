@@ -251,125 +251,170 @@ def plot_incertidumbres(especie_df, label, title):
     plt.tight_layout()
     plt.show()
 
-def plot_combinado(ruta_imagen, especie_df, label, titulo_especie, predicted_probabilities=None, etiqueta_real=None, figsize=(15, 5)):
+def plot_combinado(ruta_imagen, especie_df, label, titulo_especie, predicted_probabilities=None, etiqueta_real=None, figsize=(18, 6)):
+    # Configurar estilo científico
+    plt.rcParams.update({
+        'font.family': 'sans-serif',
+        'font.sans-serif': ['Arial', 'Helvetica', 'DejaVu Sans'],
+        'axes.linewidth': 0.8,
+        'axes.spines.top': False,
+        'axes.spines.right': False,
+        'grid.alpha': 0.3
+    })
+    
     # Crear figura con tres subplots
     fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=figsize,
-                                        gridspec_kw={'width_ratios': [2, 3, 4]})
+                                        gridspec_kw={'width_ratios': [2, 3, 4]},
+                                        facecolor='white')
 
-    # Primer subplot: Mostrar imagen
+    # Primer subplot: Mostrar espectrograma con colormap viridis
     try:
         imagen = cargar_imagen_redimensionada(ruta_imagen)
-        ax1.imshow(imagen.numpy().astype(np.uint8))
-        ax1.set_title(f"A. Mel Spectrogram\n{titulo_especie}", fontsize=15, fontweight='bold', pad=15)
-        ax1.axis('off')
+        # Aplicar colormap viridis al espectrograma
+        im = ax1.imshow(imagen.numpy().astype(np.uint8), cmap='viridis', aspect='auto')
+        
+        # Formatear nombre de especie en itálica
+        genus_species = titulo_especie.split()
+        if len(genus_species) >= 2:
+            titulo_italica = f"$\it{{{genus_species[0]}}}$ $\it{{{genus_species[1]}}}$"
+        else:
+            titulo_italica = f"$\it{{{titulo_especie}}}$"
+        
+        ax1.set_title(f"(a) Mel spectrogram\n{titulo_italica}", fontsize=16, fontweight='bold', pad=15)
+        ax1.set_xlabel('Time', fontsize=14, fontweight='bold')
+        ax1.set_ylabel('Frequency', fontsize=14, fontweight='bold')
+        ax1.tick_params(labelsize=10)
+        
+        # Añadir colorbar compacto
+        cbar = plt.colorbar(im, ax=ax1, fraction=0.046, pad=0.04)
+        cbar.set_label('Intensity', fontsize=10, fontweight='bold')
+        cbar.ax.tick_params(labelsize=9)
     except Exception as e:
         print(f"Error al cargar la imagen: {e}")
-        ax1.text(0.5, 0.5, "Error al cargar la imagen",
-                 ha='center', va='center')
+        ax1.text(0.5, 0.5, "Error loading spectrogram",
+                 ha='center', va='center', fontsize=12)
         ax1.axis('off')
 
     # Segundo subplot: Gráfico de incertidumbres (distribución)
-    # Ordenar datos
-    especie_df = especie_df.sort_values(by="prediccion_mc", ascending=True).reset_index(drop=True)
+    # Ordenar datos por frecuencia descendente para mejor visualización
+    especie_df = especie_df.sort_values(by="proportion", ascending=False).reset_index(drop=True)
 
-    # Crear colores personalizados - colores más apropiados para publicación científica
-    colores = ['#D73027'] * len(especie_df)  # Color rojo más suave para todas las barras
-    indice_label = especie_df[especie_df['prediccion_mc'] == label].index
-    for idx in indice_label:
-        colores[idx] = '#1A9850'  # Color verde más profesional para las barras correctas
+    # Colores científicos colorblind-friendly
+    color_correct = '#0173B2'  # Azul para predicción correcta
+    color_incorrect = '#DE8F05'  # Naranja para predicciones incorrectas
 
-    # Convertir proporciones a porcentajes para el gráfico
+    # Convertir proporciones a porcentajes
     especie_df_porcentajes = especie_df.copy()
     especie_df_porcentajes["proportion"] = especie_df_porcentajes["proportion"] * 100
 
-    # Crear el gráfico de barras
-    sns.barplot(
-        x=especie_df_porcentajes['prediccion_mc'],
-        y=especie_df_porcentajes["proportion"],
-        palette=colores,
-        ax=ax2
-    )
+    # Crear colores basados en si es la clase correcta
+    colores = [color_correct if pred == label else color_incorrect 
+               for pred in especie_df_porcentajes['prediccion_mc']]
 
-    # Configurar el gráfico de incertidumbres
-    ax2.set_title('B. Monte Carlo Dropout Predictions',
-                fontsize=15, fontweight='bold', pad=15)
-    ax2.set_xlabel('Predicted Class', fontsize=14, fontweight='bold')
+    # Crear gráfico de barras manual para mejor control
+    bars = ax2.bar(range(len(especie_df_porcentajes)), 
+                   especie_df_porcentajes["proportion"],
+                   color=colores, alpha=0.85,
+                   edgecolor='black', linewidth=0.5)
+
+    # Configurar el gráfico
+    ax2.set_title('(b) Monte Carlo predictions', fontsize=16, fontweight='bold', pad=15)
+    ax2.set_xlabel('Predicted class (ranked by frequency)', fontsize=14, fontweight='bold')
     ax2.set_ylabel('Frequency (%)', fontsize=14, fontweight='bold')
-    ax2.grid(axis='y', linestyle='--', alpha=0.7)
+    ax2.grid(axis='y', alpha=0.3, linestyle='-', linewidth=0.5)
+    ax2.set_axisbelow(True)
 
-    # Añadir valores sobre las barras
-    for i, p in enumerate(ax2.patches):
-        height = p.get_height()
-        if height > 0:
-            ax2.text(p.get_x() + p.get_width()/2., height + 2,
-                    f'{height:.1f}%', ha="center", fontsize=12)
+    # Configurar etiquetas del eje X
+    ax2.set_xticks(range(len(especie_df_porcentajes)))
+    ax2.set_xticklabels(especie_df_porcentajes['prediccion_mc'], 
+                        rotation=45, ha='right', fontsize=10)
 
-    ax2.set_ylim(0, 100)
+    # Añadir valores sobre las barras (solo para los más significativos)
+    for i, (bar, val) in enumerate(zip(bars, especie_df_porcentajes["proportion"])):
+        if val > 5:  # Solo mostrar si es mayor a 5%
+            ax2.text(bar.get_x() + bar.get_width()/2., val + 1,
+                    f'{val:.1f}%', ha="center", fontsize=10, fontweight='bold')
 
-    # Tercer subplot: Top 10 probabilidades con intervalos de confianza (si se proporciona predicted_probabilities)
+    ax2.set_ylim(0, max(especie_df_porcentajes["proportion"]) * 1.15)
+    
+    # Añadir leyenda
+    from matplotlib.patches import Rectangle
+    legend_elements = [
+        Rectangle((0,0),1,1, fc=color_correct, alpha=0.85, ec='black', lw=0.5, label='True class'),
+        Rectangle((0,0),1,1, fc=color_incorrect, alpha=0.85, ec='black', lw=0.5, label='Other classes')
+    ]
+    ax2.legend(handles=legend_elements, loc='upper right', fontsize=10, frameon=True,
+              fancybox=False, edgecolor='gray', framealpha=0.9)
+
+    # Tercer subplot: Probabilidades con intervalos de confianza
     if predicted_probabilities is not None and etiqueta_real is not None:
-        # Calcular la media de las probabilidades para todas las clases
-        prob_media = np.mean(predicted_probabilities, axis=0)
-
-        # Obtener los índices del top 10 de las clases con mayor probabilidad media
-        top_indices = np.argsort(prob_media)[-10:][::-1]
-
-        # Asegurar que la clase real esté incluida en el conjunto de clases a visualizar
+        # Calcular estadísticas de probabilidades
+        prob_mean = np.mean(predicted_probabilities, axis=0) * 100
+        prob_std = np.std(predicted_probabilities, axis=0) * 100
+        
+        # Obtener top 10 clases por probabilidad media
+        top_indices = np.argsort(prob_mean)[-10:][::-1]
+        
+        # Asegurar que la clase real esté incluida
         if etiqueta_real not in top_indices:
-            top_indices = np.append(top_indices, etiqueta_real)
-
-        # Preparar datos solo para las clases seleccionadas y convertir a porcentajes
-        pct_2p5 = np.array([np.percentile(predicted_probabilities[:, i], 2.5) for i in top_indices]) * 100
-        pct_97p5 = np.array([np.percentile(predicted_probabilities[:, i], 97.5) for i in top_indices]) * 100
-
-        # Crear colores personalizados para las barras - colores profesionales
-        colores_prob = ['#D73027'] * len(top_indices)  # Color rojo más suave
-
-        # Encontrar la posición de la etiqueta real y cambiar a verde
-        for i, idx in enumerate(top_indices):
-            if idx == etiqueta_real:
-                colores_prob[i] = '#1A9850'  # Verde profesional para la clase real
-                break
-
-        # Crear barras con colores personalizados
-        bars = ax3.bar(range(len(top_indices)), pct_97p5,
-                      color=colores_prob)
-
-        # Mostrar el intervalo de confianza inferior
-        ax3.bar(range(len(top_indices)), pct_2p5-0.1,
-               color='white')
-
-        # Añadir valores de porcentaje sobre las barras
-        for i, bar in enumerate(bars):
-            height = bar.get_height()
-            if height > 0.1:  # Solo mostrar porcentajes significativos (mayor a 0.1%)
-                ax3.text(bar.get_x() + bar.get_width()/2., height + 0.05,
-                       f'{height:.1f}%', ha="center", fontsize=12)
-
-        # Configurar etiquetas del eje X con los índices de las clases
-        ax3.set_xticks(range(len(top_indices)))
-        ax3.set_xticklabels(top_indices, ha='right')
-
-        # Mejoras estéticas adicionales
-        ax3.set_ylim([0, max(pct_97p5) * 1.2])  # Ajustar dinámicamente el límite superior
+            top_indices = np.concatenate([top_indices[:-1], [etiqueta_real]])
+        
+        # Calcular intervalos de confianza al 95%
+        prob_lower = np.array([np.percentile(predicted_probabilities[:, i], 2.5) for i in top_indices]) * 100
+        prob_upper = np.array([np.percentile(predicted_probabilities[:, i], 97.5) for i in top_indices]) * 100
+        prob_means = prob_mean[top_indices]
+        
+        # Colores científicos
+        colores_prob = [color_correct if idx == etiqueta_real else color_incorrect 
+                       for idx in top_indices]
+        
+        # Crear gráfico de barras con barras de error
+        x_pos = range(len(top_indices))
+        bars = ax3.bar(x_pos, prob_means,
+                      yerr=[prob_means - prob_lower, prob_upper - prob_means],
+                      color=colores_prob, alpha=0.85,
+                      edgecolor='black', linewidth=0.5,
+                      error_kw={'elinewidth': 1.5, 'capsize': 4, 'capthick': 1.5,
+                               'ecolor': 'gray', 'alpha': 0.7})
+        
+        # Añadir valores significativos
+        for i, (bar, val) in enumerate(zip(bars, prob_means)):
+            if val > 1:  # Solo mostrar si > 1%
+                ax3.text(bar.get_x() + bar.get_width()/2., val + (prob_upper[i] - prob_means[i]) + max(prob_means)*0.02,
+                       f'{val:.1f}%', ha="center", fontsize=12, fontweight='bold')
+        
+        # Configurar ejes
+        ax3.set_xticks(x_pos)
+        ax3.set_xticklabels(top_indices, rotation=45, ha='right', fontsize=10)
+        ax3.set_ylim([0, max(prob_upper) * 1.15])
         ax3.set_ylabel('Probability (%)', fontsize=14, fontweight='bold')
-        ax3.set_title('C. Probability Distribution (95% CI)',
-                     fontsize=15, fontweight='bold', pad=15)
-        ax3.grid(axis='y', linestyle='--', alpha=0.7)
-
-        # Añadir un texto explicativo sobre los intervalos de confianza
-        ax3.text(0.5, -0.15, "Error bars show 95% confidence intervals",
-                ha='center', va='center', transform=ax3.transAxes, fontsize=12, style='italic',
-                fontweight='bold')
+        ax3.set_xlabel('Class label', fontsize=14, fontweight='bold')
+        ax3.set_title('(c) Probability distribution (95% CI)',
+                     fontsize=16, fontweight='bold', pad=15)
+        ax3.grid(axis='y', alpha=0.3, linestyle='-', linewidth=0.5)
+        ax3.set_axisbelow(True)
+        
+        # Añadir leyenda
+        legend_elements_c = [
+            Rectangle((0,0),1,1, fc=color_correct, alpha=0.85, ec='black', lw=0.5, label='True class'),
+            Rectangle((0,0),1,1, fc=color_incorrect, alpha=0.85, ec='black', lw=0.5, label='Predicted classes')
+        ]
+        ax3.legend(handles=legend_elements_c, loc='upper right', fontsize=10, frameon=True,
+                  fancybox=False, edgecolor='gray', framealpha=0.9)
+        
+        # Remover spines superiores y derechos
+        ax3.spines['top'].set_visible(False)
+        ax3.spines['right'].set_visible(False)
     else:
-        ax3.set_title("Datos de probabilidades no disponibles")
+        ax3.text(0.5, 0.5, "Probability data not available",
+                ha='center', va='center', fontsize=12)
         ax3.axis('off')
 
-    # Eliminar líneas del marco excepto abajo y a la izquierda
-    sns.despine(ax=ax2)
-    if predicted_probabilities is not None:
-        sns.despine(ax=ax3)
+    # Remover spines de todos los ejes
+    ax1.spines['top'].set_visible(False)
+    ax1.spines['right'].set_visible(False)
+    ax2.spines['top'].set_visible(False)
+    ax2.spines['right'].set_visible(False)
 
-    plt.tight_layout(pad=2.0)
-    plt.subplots_adjust(bottom=0.15)
+    plt.tight_layout(pad=1.5)
     plt.show()
