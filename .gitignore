@@ -13,3 +13,4 @@ transfor_songs
 *.zip
 ELECode
 ELEData
+/src/data/images_test/
