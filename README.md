@@ -1,227 +1,200 @@
-# Proyecto de Clasificación de Aves mediante Sonidos
+# Bird Sound Classification
 
-Este proyecto implementa un sistema completo para el análisis, procesamiento y clasificación de sonidos de aves utilizando técnicas avanzadas de aprendizaje profundo.
+Automatic classification system for **667 bird species** using convolutional neural networks on audio spectrograms, with comparative phylogenetic analysis.
 
-## Estructura del Proyecto
+## Project Overview
 
-El proyecto está organizado en dos carpetas principales:
+This project implements a complete pipeline for:
 
-### 1. Carpeta `src`
+1. **Audio to mel spectrogram conversion** - Transforming bird recordings into visual representations
+2. **Deep Learning classification** - Training CNNs (ResNet152V2, EfficientNet, MobileNet) with transfer learning
+3. **Uncertainty analysis** - Confidence quantification using Monte Carlo Dropout
+4. **Explainability** - Visualization of decision regions with GradCAM and SHAP
+5. **Phylogenetic analysis** - Evaluation of factors influencing performance using PGLS/PGLMM
 
-Contiene los módulos de código Python con la implementación de las clases y funciones principales del sistema:
+## Methodology
 
-- **image_preprocessor.py**: Preprocesamiento y aumento de imágenes de espectrogramas.
-- **model_trainer.py**: Entrenamiento de modelos utilizando diferentes arquitecturas de redes neuronales.
-- **predictor.py**: Realización de predicciones con modelos entrenados.
-- **spectograms.py**: Transformación de archivos de audio en espectrogramas.
-- **taxonomia.py**: Manejo de la taxonomía de aves.
-- **data_engineering.py**: Funciones para manipulación y transformación de datos.
-- **gradcam.py**: Implementación de GradCAM para visualizar áreas de decisión del modelo.
-- **incertidumbres.py**: Análisis de incertidumbres en las predicciones.
+### Audio Processing
 
-### 2. Carpeta `notebooks`
+- **Input**: Audio files (.ogg, .mp3) of bird recordings
+- **Conversion**: Mel spectrograms (128x224 pixels)
+- **Parameters**: Sample rate 32kHz, frequency range 500-12500 Hz, 5-second segments
 
-Contiene los cuadernos Jupyter (notebooks) que demuestran el flujo de trabajo completo:
+### Model Architecture
 
-- **00_Download data.ipynb**: Descarga de datos de audio de aves.
-- **01_Paths.ipynb**: Configuración de rutas y directorios de trabajo.
-- **02_Overview.ipynb**: Visión general del dataset y análisis exploratorio.
-- **05_fine-tune-efficientnet-b7.ipynb**: Ajuste fino del modelo EfficientNetB7.
-- **06_fine_tune_efficientnetv2_L.ipynb**: Ajuste fino del modelo EfficientNetV2L.
-- **07_mobilenet_v3.ipynb**: Entrenamiento utilizando MobileNetV3.
-- **08_resnet_v2_152.ipynb**: Entrenamiento utilizando ResNetV2-152.
-- **09_GradCam.ipynb**: Visualización de mapas de activación con GradCAM.
-- **10_Shap.ipynb**: Análisis de atribución de características con SHAP.
-- **11_Incertidumbres.ipynb**: Evaluación de incertidumbres en las predicciones.
+Four architectures were evaluated with transfer learning from ImageNet:
 
-## Componentes Principales
+| Model           | Features                          |
+| --------------- | --------------------------------- |
+| ResNet152V2     | Best overall performance          |
+| EfficientNetV2L | Accuracy/efficiency balance       |
+| EfficientNetB7  | High capacity                     |
+| MobileNetV3     | Optimized for fast inference      |
 
-### Preprocesamiento de Imágenes
+### Data Augmentation
 
-El componente `ImagePreprocessor` (en `image_preprocessor.py`) permite:
+Audio-specific techniques:
 
-- Cargar y transformar imágenes de espectrogramas.
-- Aplicar técnicas de aumento de datos específicas para audio:
-  - Time Masking: Enmascaramiento temporal de filas.
-  - Frequency Masking: Enmascaramiento de frecuencias (columnas).
-  - Ajustes de brillo, desenfoque, y enmascaramiento de cuadrícula.
-- Generar datasets de TensorFlow optimizados para entrenamiento y validación.
+- **Time Masking**: Temporal band masking
+- **Frequency Masking**: Frequency band masking
+- GridMask, brightness adjustments, Gaussian blur
 
-```python
-# Ejemplo de uso
-from src.image_preprocessor import ImagePreprocessor, ImagePreprocessorConfig
+### Phylogenetic Analysis
 
-# Configuración personalizada
-config = ImagePreprocessorConfig(
-    img_size=(128, 256),
-    channels=1,
-    batch_size=64,
-    aug_proba=0.8
-)
+Integration with AVONET morphological data to analyze which factors influence species classifiability:
 
-# Inicializar el preprocesador
-preprocessor = ImagePreprocessor(config)
+- **PGLS** (Phylogenetic Generalized Least Squares)
+- **PGLMM** (Phylogenetic Generalized Linear Mixed Models)
 
-# Crear datasets para entrenamiento
-train_ds = preprocessor.create_training_dataset(df_train)
-val_ds = preprocessor.create_validation_dataset(df_val)
+## Key Findings
+
+1. **Performance**: The ResNet152V2 model classifies 667 bird species with detailed precision, recall, and F1-score metrics per species
+
+2. **Uncertainty**: Monte Carlo Dropout (2000 samples) enables prediction confidence quantification with 95% confidence intervals
+
+3. **Taxonomic confusion**: Species confusion is correlated with phylogenetic proximity - species from the same genus or family tend to be confused more often
+
+4. **Morphological traits**: PGLS/PGLMM analysis reveals which morphological features (AVONET) are associated with better or worse classifiability
+
+5. **Explainability**: GradCAM shows that the model focuses on species-specific temporal and frequency patterns
+
+## Project Structure
+
+```
+birds-sounds/
+├── src/                          # Main modules
+│   ├── spectograms.py            # Spectrogram generation
+│   ├── image_preprocessor.py     # Preprocessing and data augmentation
+│   ├── model_trainer.py          # Model training
+│   ├── predictor.py              # Predictions
+│   ├── gradcam.py                # GradCAM visualization
+│   ├── incertidumbres.py         # Monte Carlo analysis
+│   ├── data_engineering.py       # Audio feature extraction
+│   ├── data_preprocessor.py      # DataFrame preprocessing
+│   ├── taxonomia.py              # Taxonomic mappings
+│   ├── analisis_confusion.py     # Confusion analysis
+│   └── data/                     # Data and results
+│       ├── AVONET.xlsx           # Morphological traits
+│       ├── reporte_resnet.csv    # Per-species metrics
+│       └── pgls_*.csv            # Phylogenetic analysis results
+├── notebooks/                    # Complete workflow
+│   ├── 00-04                     # Data preparation
+│   ├── 05-08                     # Model training
+│   ├── 09-11                     # Explainability and uncertainty
+│   └── 12-18                     # Phylogenetic analysis
+└── fig/                          # Generated visualizations
 ```
 
-### Generación de Espectrogramas
+## Usage
 
-El componente `SpectogramConfig` (en `spectograms.py`) permite:
+### Installation
 
-- Convertir archivos de audio de aves en espectrogramas mel.
-- Configurar parámetros de procesamiento de audio (tasa de muestreo, FFT, etc.).
-- Procesar lotes de archivos en paralelo.
-- Normalizar y guardar espectrogramas como imágenes JPEG.
+```bash
+# Clone repository
+git clone <repo-url>
+cd birds-sounds
+
+# Install dependencies (requires Python >= 3.11.11)
+pip install -e .
+# or with uv
+uv sync
+```
+
+### Generate Spectrograms
 
 ```python
-# Ejemplo de uso
 from src.spectograms import SpectogramConfig
 
-# Inicializar configuración
-spectogram_generator = SpectogramConfig(
+config = SpectogramConfig(
     audio_dir="data/audio",
     output_dir="data/spectograms",
-    img_size=(224, 224),
+    img_size=(128, 224),
     sample_rate=32000,
     seconds=5
 )
-
-# Procesar datos y generar espectrogramas
-data = spectogram_generator.load_data()
-data_with_duration = spectogram_generator.duration("audio_path")
-spectogram_data, errors = spectogram_generator.process_data()
+data, errors = config.process_data()
 ```
 
-### Entrenamiento de Modelos
-
-El componente `ModelTrainer` (en `model_trainer.py`) permite:
-
-- Entrenar modelos de clasificación utilizando diferentes arquitecturas:
-  - ResNet152V2
-  - MobileNetV3Large
-  - EfficientNetV2L
-  - EfficientNetB7
-- Configurar ajuste fino (fine-tuning) de capas específicas.
-- Implementar técnicas de regularización (dropout, suavizado de etiquetas).
-- Monitoreo del entrenamiento con callbacks optimizados.
+### Train Model
 
 ```python
-# Ejemplo de uso
 from src.model_trainer import ModelTrainer
+from src.image_preprocessor import ImagePreprocessor, ImagePreprocessorConfig
 
-# Inicializar el entrenador con la arquitectura deseada
+# Prepare data
+preprocessor = ImagePreprocessor(ImagePreprocessorConfig(img_size=(128, 224)))
+train_ds = preprocessor.create_training_dataset(df_train)
+val_ds = preprocessor.create_validation_dataset(df_val)
+
+# Train
 trainer = ModelTrainer(
-    model_name="EfficientNetV2L",
-    img_shape=(224, 224, 1),
+    model_name="ResNet152V2",
+    img_shape=(128, 224, 1),
     n_classes=667,
-    dropout_rate=0.2,
-    label_smoothing=0.1,
-    weights="imagenet",
-    fine_tune_layers=200
+    fine_tune_layers=100
 )
-
-# Entrenar el modelo
-model = trainer.train(
-    train_dataset=train_ds,
-    val_dataset=val_ds,
-    learning_rate=1e-4,
-    epochs=20
-)
+model = trainer.train(train_ds, val_ds, epochs=20)
 ```
 
-### Predicción
-
-El componente `Predictor` (en `predictor.py`) permite:
-
-- Cargar modelos entrenados para realizar predicciones.
-- Procesar imágenes individuales o lotes para clasificación.
-- Obtener las N clases más probables para cada predicción.
-- Integrar el preprocesamiento con el proceso de predicción.
+### Make Predictions
 
 ```python
-# Ejemplo de uso
 from src.predictor import Predictor
 
-# Inicializar el predictor
 predictor = Predictor(
-    model_name="EfficientNetV2L",
-    model_path="models/EfficientNetV2L_best.h5",
-    img_shape=(224, 224, 1),
+    model_name="ResNet152V2",
+    model_path="models/resnet_best.h5",
     n_classes=667
 )
-
-# Predecir clase para una imagen
-class_id, probability = predictor.predict_single("path/to/spectogram.jpg")
-
-# Obtener top-5 predicciones
-top_predictions = predictor.predict_with_top_k("path/to/spectogram.jpg", k=5)
+class_id, probability = predictor.predict_single("spectrogram.jpg")
 ```
 
-### Visualización y Explicabilidad
+### Uncertainty Analysis
 
-El proyecto incluye componentes avanzados para interpretación de modelos:
+```python
+from src.incertidumbres import calcular_incertidumbre, plot_combinado
 
-- **GradCAM** (en `gradcam.py`): Visualiza regiones importantes en el espectrograma que contribuyen a la predicción.
-- **SHAP** (en el notebook `10_Shap.ipynb`): Análisis de atribución de características para entender el comportamiento del modelo.
-- **Incertidumbres** (en `incertidumbres.py`): Métodos para cuantificar la incertidumbre en las predicciones, importante para aplicaciones críticas.
+# Get prediction distribution (2000 MC samples)
+results = calcular_incertidumbre(model, image, n_samples=2000)
 
-## Flujo de Trabajo
+# Visualize
+plot_combinado(image, results, true_class, labels)
+```
 
-El proceso completo de trabajo con este proyecto sigue estos pasos:
+### GradCAM Visualization
 
-1. **Preparación de Datos**:
+```python
+from src.gradcam import GradCAM
 
-   - Descargar archivos de audio de aves (`00_Download data.ipynb`)
-   - Convertir audio en espectrogramas (`spectograms.py`)
-   - Organizar imágenes en estructura de directorios
+gradcam = GradCAM(model)
+heatmap = gradcam.generate_heatmap(image)
+```
 
-2. **Preprocesamiento**:
+## Notebook Workflow
 
-   - Configurar el preprocesador de imágenes (`image_preprocessor.py`)
-   - Aplicar técnicas de aumento de datos
-   - Crear datasets para entrenamiento y validación
+| Notebook | Description                                            |
+| -------- | ------------------------------------------------------ |
+| 00-02    | Data download and exploratory analysis                 |
+| 03-04    | Spectrogram generation and organization                |
+| 05-08    | Model training (EfficientNet, MobileNet, ResNet)       |
+| 09       | GradCAM visualization                                  |
+| 10       | SHAP analysis                                          |
+| 11       | Uncertainty quantification                             |
+| 12-13    | Feature engineering and AVONET data                    |
+| 14-15    | Phylogenetic tree and QuaSSE analysis                  |
+| 16       | Multimodal model (audio + morphology)                  |
+| 17-18    | Visualizations and PGLS/PGLMM analysis                 |
 
-3. **Entrenamiento**:
+## Main Dependencies
 
-   - Seleccionar arquitectura y configurar hiperparámetros
-   - Entrenar modelo con ajuste fino (notebooks 05-08)
-   - Evaluar rendimiento y guardar mejor modelo
+- TensorFlow >= 2.19
+- Librosa >= 0.11 (audio processing)
+- Keras-CV >= 0.9 (data augmentation)
+- Scikit-learn >= 1.6
+- Pandas, NumPy, Matplotlib, Seaborn
 
-4. **Análisis y Explicabilidad**:
+## Requirements
 
-   - Visualizar regiones de decisión con GradCAM (notebook 09)
-   - Analizar importancia de características con SHAP (notebook 10)
-   - Evaluar incertidumbres en las predicciones (notebook 11)
-
-5. **Predicción**:
-   - Configurar el predictor con el modelo entrenado
-   - Realizar predicciones en nuevos datos
-   - Analizar resultados y probablidades
-
-## Requisitos y Dependencias
-
-El proyecto utiliza las siguientes bibliotecas principales:
-
-- TensorFlow 2.x: Framework principal para modelos de aprendizaje profundo
-- Keras: API de alto nivel para redes neuronales
-- Librosa: Análisis de audio y extracción de características
-- Numpy/Pandas: Manejo y procesamiento de datos
-- Matplotlib: Visualización de datos
-- OpenCV (cv2): Procesamiento de imágenes
-- Scikit-learn: Herramientas de aprendizaje automático
-
-## Uso del proyecto
-
-Para utilizar este proyecto, se recomienda seguir el flujo de trabajo demostrado en los notebooks, comenzando con la descarga de datos y siguiendo el proceso hasta la predicción y análisis.
-
-Los módulos en la carpeta `src` pueden importarse directamente para aplicaciones personalizadas o integrarse en otros proyectos de clasificación basados en sonido.
-
-## Consideraciones y Limitaciones
-
-- El rendimiento depende de la calidad de los espectrogramas generados.
-- Las grabaciones de audio deben tener una duración mínima para generar espectrogramas adecuados.
-- El entrenamiento de modelos como EfficientNetV2L requiere significativos recursos computacionales (GPU recomendada).
-- Para aplicaciones en tiempo real, considerar modelos más ligeros como MobileNetV3Large.
+- Python >= 3.11.11
+- GPU recommended for training (CUDA compatible)
+- ~25GB disk space for complete data
