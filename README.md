@@ -1,6 +1,6 @@
 [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.18464327-blue)](https://doi.org/10.5281/zenodo.18464327)
 
-# Bird Sound Classification
+# Bird Sound Classification and Evolution
 
 Automatic classification system for **667 bird species** using convolutional neural networks on audio spectrograms, with comparative phylogenetic analysis.
 
