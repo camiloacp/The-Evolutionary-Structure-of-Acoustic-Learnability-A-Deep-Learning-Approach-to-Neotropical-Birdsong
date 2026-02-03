@@ -1,3 +1,5 @@
+[![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.18464327-blue)](https://doi.org/10.5281/zenodo.18464327)
+
 # Bird Sound Classification
 
 Automatic classification system for **667 bird species** using convolutional neural networks on audio spectrograms, with comparative phylogenetic analysis.
@@ -24,12 +26,12 @@ This project implements a complete pipeline for:
 
 Four architectures were evaluated with transfer learning from ImageNet:
 
-| Model           | Features                          |
-| --------------- | --------------------------------- |
-| ResNet152V2     | Best overall performance          |
-| EfficientNetV2L | Accuracy/efficiency balance       |
-| EfficientNetB7  | High capacity                     |
-| MobileNetV3     | Optimized for fast inference      |
+| Model           | Features                     |
+| --------------- | ---------------------------- |
+| ResNet152V2     | Best overall performance     |
+| EfficientNetV2L | Accuracy/efficiency balance  |
+| EfficientNetB7  | High capacity                |
+| MobileNetV3     | Optimized for fast inference |
 
 ### Data Augmentation
 
@@ -172,18 +174,18 @@ heatmap = gradcam.generate_heatmap(image)
 
 ## Notebook Workflow
 
-| Notebook | Description                                            |
-| -------- | ------------------------------------------------------ |
-| 00-02    | Data download and exploratory analysis                 |
-| 03-04    | Spectrogram generation and organization                |
-| 05-08    | Model training (EfficientNet, MobileNet, ResNet)       |
-| 09       | GradCAM visualization                                  |
-| 10       | SHAP analysis                                          |
-| 11       | Uncertainty quantification                             |
-| 12-13    | Feature engineering and AVONET data                    |
-| 14-15    | Phylogenetic tree and QuaSSE analysis                  |
-| 16       | Multimodal model (audio + morphology)                  |
-| 17-18    | Visualizations and PGLS/PGLMM analysis                 |
+| Notebook | Description                                      |
+| -------- | ------------------------------------------------ |
+| 00-02    | Data download and exploratory analysis           |
+| 03-04    | Spectrogram generation and organization          |
+| 05-08    | Model training (EfficientNet, MobileNet, ResNet) |
+| 09       | GradCAM visualization                            |
+| 10       | SHAP analysis                                    |
+| 11       | Uncertainty quantification                       |
+| 12-13    | Feature engineering and AVONET data              |
+| 14-15    | Phylogenetic tree and QuaSSE analysis            |
+| 16       | Multimodal model (audio + morphology)            |
+| 17-18    | Visualizations and PGLS/PGLMM analysis           |
 
 ## Main Dependencies
 
