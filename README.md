@@ -1,4 +1,4 @@
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21019771.svg)](https://doi.org/10.5281/zenodo.21019771)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21020481.svg)](https://doi.org/10.5281/zenodo.21020481)
 
 # Bird Sound Classification and Evolution
 
