@@ -279,6 +279,35 @@ def is_valid_audio(path: str, min_duration_s: float = 0.5) -> bool:
     return len(data) > 0 and sr > 0 and (len(data) / sr) >= min_duration_s
 
 
+def load_mono_48k(path: str, target_sr: int = 48000, min_duration_s: float = 0.5):
+    """Carga un audio como array mono ``float32`` resampleado a ``target_sr``.
+
+    Devuelve ``(array, target_sr)`` o ``None`` si es ilegible o dura menos de
+    ``min_duration_s``. Pre-decodificar así —en vez de dejar que BirdNET lea el
+    archivo— **esquiva el bug de segmento vacío al resamplear** que provocan los
+    MP3 corruptos de Xeno-canto (y evita el multiprocessing frágil de la lectura).
+    """
+    try:
+        import soundfile as sf
+        data, sr = sf.read(path, dtype="float32")
+    except Exception:
+        return None
+    import numpy as np
+    if getattr(data, "ndim", 1) > 1:
+        data = data.mean(axis=1)
+    if len(data) == 0 or sr <= 0 or (len(data) / sr) < min_duration_s:
+        return None
+    if int(sr) != int(target_sr):
+        try:
+            from math import gcd
+            from scipy.signal import resample_poly
+            g = gcd(int(sr), int(target_sr))
+            data = resample_poly(data, int(target_sr) // g, int(sr) // g)
+        except Exception:
+            return None
+    return (np.ascontiguousarray(data, dtype=np.float32), int(target_sr))
+
+
 def predict_birdnet_robust(
     model,
     paths,
@@ -304,7 +333,7 @@ def predict_birdnet_robust(
         res = model.predict(
             subset,
             top_k=top_k,
-            n_producers=1,
+            n_producers=8,
             default_confidence_threshold=default_confidence_threshold,
             custom_species_list=custom_species_list,
             show_stats=None,
