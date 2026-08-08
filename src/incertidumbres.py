@@ -251,11 +251,11 @@ def plot_incertidumbres(especie_df, label, title):
     plt.tight_layout()
     plt.show()
 
-def plot_combinado(ruta_imagen, especie_df, label, titulo_especie, predicted_probabilities=None, etiqueta_real=None, figsize=(18, 6)):
+def plot_combinado(ruta_imagen, especie_df, label, titulo_especie, predicted_probabilities=None, etiqueta_real=None, figsize=(18, 7)):
     # Configurar estilo científico
     plt.rcParams.update({
         'font.family': 'sans-serif',
-        'font.sans-serif': ['Arial', 'Helvetica', 'DejaVu Sans'],
+        'font.sans-serif': ["Times New Roman", "Times", "DejaVu Serif"],
         'axes.linewidth': 0.8,
         'axes.spines.top': False,
         'axes.spines.right': False,
@@ -264,7 +264,7 @@ def plot_combinado(ruta_imagen, especie_df, label, titulo_especie, predicted_pro
     
     # Crear figura con tres subplots
     fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=figsize,
-                                        gridspec_kw={'width_ratios': [2, 3, 4]},
+                                        gridspec_kw={'width_ratios': [3, 2, 4]},
                                         facecolor='white')
 
     # Primer subplot: Mostrar espectrograma con colormap viridis
@@ -280,15 +280,15 @@ def plot_combinado(ruta_imagen, especie_df, label, titulo_especie, predicted_pro
         else:
             titulo_italica = f"$\it{{{titulo_especie}}}$"
         
-        ax1.set_title(f"(a) Mel spectrogram\n{titulo_italica}", fontsize=16, fontweight='bold', pad=15)
-        ax1.set_xlabel('Time', fontsize=14, fontweight='bold')
-        ax1.set_ylabel('Frequency', fontsize=14, fontweight='bold')
-        ax1.tick_params(labelsize=10)
+        ax1.set_title(f"(i) Mel spectrogram\n{titulo_italica}", fontsize=20, fontweight='bold', pad=15)
+        ax1.set_xlabel('Time', fontsize=18, fontweight='bold')
+        ax1.set_ylabel('Frequency', fontsize=18, fontweight='bold')
+        ax1.tick_params(labelsize=14)
         
         # Añadir colorbar compacto
         cbar = plt.colorbar(im, ax=ax1, fraction=0.046, pad=0.04)
-        cbar.set_label('Intensity', fontsize=10, fontweight='bold')
-        cbar.ax.tick_params(labelsize=9)
+        cbar.set_label('Intensity', fontsize=16, fontweight='bold')
+        cbar.ax.tick_params(labelsize=12)
     except Exception as e:
         print(f"Error al cargar la imagen: {e}")
         ax1.text(0.5, 0.5, "Error loading spectrogram",
@@ -318,22 +318,23 @@ def plot_combinado(ruta_imagen, especie_df, label, titulo_especie, predicted_pro
                    edgecolor='black', linewidth=0.5)
 
     # Configurar el gráfico
-    ax2.set_title('(b) Monte Carlo predictions', fontsize=16, fontweight='bold', pad=15)
-    ax2.set_xlabel('Predicted class (ranked by frequency)', fontsize=14, fontweight='bold')
-    ax2.set_ylabel('Frequency (%)', fontsize=14, fontweight='bold')
+    ax2.set_title('(ii) Monte Carlo predictions', fontsize=20, fontweight='bold', pad=15)
+    ax2.set_xlabel('Predicted class (ranked by frequency)', fontsize=18, fontweight='bold')
+    ax2.set_ylabel('Frequency (%)', fontsize=18, fontweight='bold')
     ax2.grid(axis='y', alpha=0.3, linestyle='-', linewidth=0.5)
+    ax2.tick_params(axis='both', labelsize=16)
     ax2.set_axisbelow(True)
 
     # Configurar etiquetas del eje X
     ax2.set_xticks(range(len(especie_df_porcentajes)))
     ax2.set_xticklabels(especie_df_porcentajes['prediccion_mc'], 
-                        rotation=45, ha='right', fontsize=10)
+                        rotation=0, ha='right', fontsize=16)
 
     # Añadir valores sobre las barras (solo para los más significativos)
     for i, (bar, val) in enumerate(zip(bars, especie_df_porcentajes["proportion"])):
         if val > 5:  # Solo mostrar si es mayor a 5%
             ax2.text(bar.get_x() + bar.get_width()/2., val + 1,
-                    f'{val:.1f}%', ha="center", fontsize=10, fontweight='bold')
+                    f'{val:.1f}%', ha="center", fontsize=16, fontweight='bold')
 
     ax2.set_ylim(0, max(especie_df_porcentajes["proportion"]) * 1.15)
     
@@ -343,8 +344,9 @@ def plot_combinado(ruta_imagen, especie_df, label, titulo_especie, predicted_pro
         Rectangle((0,0),1,1, fc=color_correct, alpha=0.85, ec='black', lw=0.5, label='True class'),
         Rectangle((0,0),1,1, fc=color_incorrect, alpha=0.85, ec='black', lw=0.5, label='Other classes')
     ]
-    ax2.legend(handles=legend_elements, loc='upper right', fontsize=10, frameon=True,
-              fancybox=False, edgecolor='gray', framealpha=0.9)
+    ax2.legend(handles=legend_elements, loc='upper center', bbox_to_anchor=(0.5, -0.18),
+              ncol=2, fontsize=16, frameon=True, fancybox=False, edgecolor='gray',
+              framealpha=0.9, columnspacing=1.6, handlelength=1.4)
 
     # Tercer subplot: Probabilidades con intervalos de confianza
     if predicted_probabilities is not None and etiqueta_real is not None:
@@ -381,17 +383,18 @@ def plot_combinado(ruta_imagen, especie_df, label, titulo_especie, predicted_pro
         for i, (bar, val) in enumerate(zip(bars, prob_means)):
             if val > 1:  # Solo mostrar si > 1%
                 ax3.text(bar.get_x() + bar.get_width()/2., val + (prob_upper[i] - prob_means[i]) + max(prob_means)*0.02,
-                       f'{val:.1f}%', ha="center", fontsize=12, fontweight='bold')
+                       f'{val:.1f}%', ha="center", fontsize=16, fontweight='bold')
         
         # Configurar ejes
         ax3.set_xticks(x_pos)
         ax3.set_xticklabels(top_indices, rotation=45, ha='right', fontsize=10)
         ax3.set_ylim([0, max(prob_upper) * 1.15])
-        ax3.set_ylabel('Probability (%)', fontsize=14, fontweight='bold')
-        ax3.set_xlabel('Class label', fontsize=14, fontweight='bold')
-        ax3.set_title('(c) Probability distribution (95% CI)',
-                     fontsize=16, fontweight='bold', pad=15)
+        ax3.set_ylabel('Probability (%)', fontsize=18, fontweight='bold')
+        ax3.set_xlabel('Class label', fontsize=18, fontweight='bold')
+        ax3.set_title('(iii) Probability distribution (95% CI)',
+                     fontsize=20, fontweight='bold', pad=15)
         ax3.grid(axis='y', alpha=0.3, linestyle='-', linewidth=0.5)
+        ax3.tick_params(axis='both', labelsize=16)
         ax3.set_axisbelow(True)
         
         # Añadir leyenda
@@ -399,7 +402,7 @@ def plot_combinado(ruta_imagen, especie_df, label, titulo_especie, predicted_pro
             Rectangle((0,0),1,1, fc=color_correct, alpha=0.85, ec='black', lw=0.5, label='True class'),
             Rectangle((0,0),1,1, fc=color_incorrect, alpha=0.85, ec='black', lw=0.5, label='Predicted classes')
         ]
-        ax3.legend(handles=legend_elements_c, loc='upper right', fontsize=10, frameon=True,
+        ax3.legend(handles=legend_elements_c, loc='upper right', fontsize=16, frameon=True,
                   fancybox=False, edgecolor='gray', framealpha=0.9)
         
         # Remover spines superiores y derechos
@@ -417,4 +420,5 @@ def plot_combinado(ruta_imagen, especie_df, label, titulo_especie, predicted_pro
     ax2.spines['right'].set_visible(False)
 
     plt.tight_layout(pad=1.5)
+    plt.savefig(f'../fig/incertidumbre_{titulo_especie}.png', dpi=600, bbox_inches='tight')
     plt.show()
