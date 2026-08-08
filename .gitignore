@@ -19,7 +19,11 @@ eval "$(ssh-agent -s)"
 *.pkl
 logs
 model
+.venv
+.venv-birdnet
 *.h5
 *.mp3
 *.md
 *.json
+*.pdf
+*.png
