@@ -18,8 +18,8 @@ import matplotlib.pyplot as plt
 
 # rcParams estándar (idénticos a los notebooks 18/19/11)
 RCPARAMS = {
-    "font.family": "sans-serif",
-    "font.sans-serif": ["Arial", "Helvetica", "DejaVu Sans"],
+    "font.family": "serif",
+    "font.serif": ["Times New Roman", "Times", "DejaVu Serif"],
     "font.size": 12,
     "axes.linewidth": 0.8,
     "axes.spines.top": False,
@@ -42,6 +42,7 @@ RCPARAMS = {
 # Colores por modelo: el modelo propio (ResNet) en azul primario del proyecto;
 # BirdNET (comparación) en el naranja secundario.
 MODEL_COLORS = {
+    "EfficientNetV2L": "#0173B2",
     "ResNet152V2": "#0173B2",
     "BirdNET_V2.4": "#DE8F05",
     "resnet": "#0173B2",
@@ -84,6 +85,22 @@ def despine(ax):
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
     ax.set_axisbelow(True)
+
+
+def panel_label(ax, letter, x=-0.02, y=1.03, fontsize=12, on_color=False):
+    """Etiqueta de panel para figuras multipart, según la guía editorial.
+
+    La letra va en cursiva dentro de paréntesis rectos (roman), p. ej. '(a)', y se
+    coloca en la esquina superior izquierda —fuera del área del panel para no
+    interferir con el contenido y en la misma posición en todos los paneles—.
+    Con `on_color=True` la etiqueta se dibuja dentro de un círculo blanco (para
+    fondos de color, p. ej. mapas de calor). Las sub-partes usan numerales romanos
+    entre paréntesis, p. ej. `panel_label(ax, "ii")`.
+    """
+    txt = rf"$(\mathit{{{letter}}})$"
+    bbox = dict(boxstyle="circle,pad=0.28", fc="white", ec="none") if on_color else None
+    ax.text(x, y, txt, transform=ax.transAxes, ha="left", va="bottom",
+            fontsize=fontsize, bbox=bbox, zorder=10)
 
 
 def savefig_dual(fig, name, fig_dir=None, dpi=300):
