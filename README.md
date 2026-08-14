@@ -24,7 +24,7 @@ This repository contains the complete code, notebooks, and data products behind 
 | Macro ROC-AUC / PR-AUC (test set) | 0.998 / 0.972 |
 | vs. BirdNET v2.4 (11,695 recordings, 664 shared species) | accuracy **0.957 vs. 0.903**, macro F1 **0.952 vs. 0.900** |
 | Phylogenetic signal of learnability (Pagel's λ) | 0.159 (*p* < 0.001) |
-| Variance explained by best trait model (Geographic PGLS) | ~2.2% — acoustic distinctiveness is largely idiosyncratic |
+| Variance explained by best trait model (Geographic PGLS) | ~2.2% — broad biological predictors explain little interspecific variation |
 
 ## Repository Structure
 
@@ -106,7 +106,7 @@ Trained on Google Colab with NVIDIA A100 GPUs.
 
 | Notebook | What it does |
 | --- | --- |
-| `18_PGLS_analysis.ipynb` | **Core comparative analysis.** Pagel's λ; PGLS on the logit-transformed F1 (boundary clipping ε = 0.001); custom `PhyloBetaRegression` class (Beta regression with a phylogenetic covariance penalty, after Ives & Garland 2010 and Ferrari & Cribari-Neto 2004; response clipped to [1e-6, 1 − 1e-6] to keep F1 = 1 values inside the open Beta support); model selection by AIC with a Jacobian correction for PGLS–PGLMM comparability; phylogenetic confusion-distance test (Mann–Whitney U). |
+| `18_PGLS_analysis.ipynb` | Core comparative analysis. Pagel's λ; PGLS on logit-transformed F1; custom `PhyloBetaRegression`; archived AIC calculations include a Jacobian correction for the transformed PGLS response. In the manuscript, model selection is interpreted within PGLS and PGLMM separately rather than using absolute cross-framework AIC differences to rank the two modelling approaches. |
 | `19_confusion-matrix.ipynb` | Confusion-matrix construction and family-level aggregation; engineering characterization of the four architectures (parameters, FLOPs at 128×256, latency/throughput). |
 
 ### Stage 6 — BirdNET benchmark (20–23)
@@ -129,12 +129,12 @@ Selected outputs referenced by the paper:
 
 | File | Contents |
 | --- | --- |
-| `reporte_efficientnetv2l.csv` | Per-species precision/recall/F1/support — EfficientNetV2L, deterministic prediction (Table S7 in the paper). |
+| `reporte_efficientnetv2l.csv` | Per-species precision/recall/F1/support for EfficientNetV2L from the archived single-pass stochastic evaluation used in the comparative analyses (Table S7). |
 | `reporte_mc_efficientnetv2l.csv` | Same, computed from the MC Dropout predictive mean. |
 | `reporte_resnet.csv`, `reporte_mc_resnet.csv` | Equivalent reports for ResNet152V2. |
 | `engineering_characterization.csv`, `inference_time_benchmark.csv` | Parameters, FLOPs, latency and throughput per architecture (Table S2, Fig. S1). |
 | `pgls_*.csv`, `feature_importance_pglmm_pgls.csv` | PGLS/PGLMM model comparison, species-level results, variable importance. |
-| `bayes_confidence_matrix_*.npz`, `bayes_uncertainty_per_species_*.csv` | Corpus-level Bayesian confidence matrices and per-species uncertainty (Figs. S4–S5). |
+| `bayes_confidence_matrix_*.npz`, `bayes_uncertainty_per_species_*.csv` | Corpus-level MC Dropout predictive-confidence matrices and per-species uncertainty (Figs. S4–S5). |
 | `birdnet_*.csv`, `birdnet_vs_*` | BirdNET predictions and the paired comparison tables (Table S1, Fig. S6). |
 | `*_incertidumbres.csv` / `.pkl` | MC Dropout predictive distributions for the case-study species. |
 | `AVONET.xlsx` | Trait database (Tobias et al. 2022). |
@@ -189,8 +189,14 @@ results = calcular_incertidumbre(model, image, n_samples=2000)
   recording-file level, never at the segment level. Crowdsourced repositories such as
   Xeno-Canto lack persistent individual-bird identifiers, so recordings of the same
   individual may still appear across splits; this is discussed as a limitation in the paper.
-- **Dropout rates:** 0.2 during training (all four architectures); 0.3 for the Monte Carlo
-  Dropout stochastic inference (notebooks 11/23).
+- **Dropout and inference:** all four architectures were trained with dropout rate 0.2. The
+  archived final EfficientNetV2L species-level report (notebook 23) was generated after
+  reconstructing the classification head with dropout rate 0.3. Because
+  `ModelTrainer.create_model()` fixes the classification-head Dropout layer with
+  `training=True`, these primary EfficientNetV2L predictions represent a single stochastic
+  realization rather than deterministic inference. The separate Monte Carlo Dropout analyses
+  use dropout rate 0.3 and aggregate 2,000 stochastic forward passes. The manuscript reports
+  this distinction explicitly.
 - **Boundary handling in comparative models:** F1 = 1 values (26 species) are clipped to
   [1e-6, 1 − 1e-6] for the Beta-PGLMM and to [0.001, 0.999] before the logit transform
   for PGLS.

@@ -118,7 +118,11 @@ class ModelTrainer:
 
         # Construir el modelo completo
         x = base_model(x)
-        x = layers.Dropout(self.dropout_rate, name="top_dropout")(x, training=True)
+        # Reproducibility note: training=True is intentionally preserved here because
+        # the archived analyses reported in the paper were generated with the
+        # classification-head Dropout active during inference. Changing this behavior
+        # requires regenerating the reported predictions and downstream analyses.
+        x = layers.Dropout(self.dropout_rate, name="top_dropout")(x) # Add parameter to training=True for MC Dropout
         outputs = layers.Dense(self.n_classes, name="logits")(x)
 
         # Crear y compilar el modelo

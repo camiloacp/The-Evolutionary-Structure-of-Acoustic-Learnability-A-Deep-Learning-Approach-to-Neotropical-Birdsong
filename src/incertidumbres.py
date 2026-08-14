@@ -76,7 +76,8 @@ def calcular_incertidumbre(dataset_espectrogramas, modelo, visualizar=False, ens
             etiqueta_real = tf.argmax(etiquetas_batch[0])
             etiqueta_real_lista.append(etiqueta_real.numpy())
 
-            # Predicción convencional (sin dropout activo)
+            # Archived single-pass prediction. Because top_dropout is fixed with
+            # training=True in ModelTrainer, this remains a stochastic forward pass.
             logits_inferencia = modelo(imagen_batch, training=False)
             probabilidades_inferencia = tf.nn.softmax(logits_inferencia, axis=-1).numpy()
             clase_predicha_inferencia = np.argmax(probabilidades_inferencia, axis=-1)[0]
